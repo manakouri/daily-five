@@ -114,6 +114,22 @@
                         answer: (whole / denominator) * numerator
                     };
                 },
+                () => {
+                    const num = getRandomInt(100, 9999);
+                    const place = [10, 100, 1000][getRandomInt(0,2)];
+                    return {
+                        question: `Round the number <strong>${num.toLocaleString()}</strong> to the nearest ${place}.`,
+                        answer: Math.round(num / place) * place
+                    };
+                },
+                 () => {
+                    const startTemp = getRandomInt(-5, 5);
+                    const change = getRandomInt(5, 15);
+                    return {
+                        question: `The temperature in the morning was ${startTemp}°C. By lunchtime, it had risen by ${change}°C. What was the new temperature?`,
+                        answer: `${startTemp + change}°C`
+                    };
+                }
             ],
             algebra: [
                 () => {
@@ -141,6 +157,16 @@
                     return {
                         question: `If <strong>7 + &#9633; = ${b}</strong>, what is the value of the square?`,
                         answer: `${b} - 7 = ${b - 7}`
+                    };
+                },
+                () => {
+                    const multiplier = getRandomInt(2, 5);
+                    const adder = getRandomInt(1, 10);
+                    const input = getRandomInt(3, 8);
+                    const output = (input * multiplier) + adder;
+                    return {
+                        question: `An input/output machine follows the rule: <strong>input &times; ${multiplier} + ${adder}</strong>. If the input is ${input}, what is the output?`,
+                        answer: output
                     };
                 }
             ],
@@ -192,13 +218,14 @@
                     ).join('');
 
                     const svg = `
-                        <svg viewBox="0 0 200 120" class="mx-auto mt-2">
+                        <svg viewBox="0 0 200 120" class="mx-auto mt-4">
                             ${paths}
                             ${legend}
                         </svg>`;
                     
                     return {
-                        question: `A survey of <strong>${total}</strong> students asked for their favourite pet. Based on the chart, how many students chose ${targetItem.label.toLowerCase()}?${svg}`,
+                        question: `A survey of <strong>${total}</strong> students asked for their favourite pet. Based on the chart, how many students chose ${targetItem.label.toLowerCase()}?`,
+                        svg: svg,
                         answer: targetItem.count
                     };
                 },
@@ -212,6 +239,41 @@
                     return {
                         question: `A bag contains ${counts[0]} red, ${counts[1]} blue, ${counts[2]} green, and ${counts[3]} yellow marbles. What is the probability of picking a <strong>${chosenColor.toLowerCase()}</strong> marble?`,
                         answer: `${chosenCount}/${total}`
+                    };
+                },
+                () => {
+                    const data = [getRandomInt(5,15), getRandomInt(5,15), getRandomInt(5,15), getRandomInt(5,15), getRandomInt(5,15)];
+                    const sum = data.reduce((a,b) => a + b, 0);
+                    const mean = sum / data.length;
+                    return {
+                        question: `Find the mean (average) of the following numbers: <strong>${data.join(', ')}</strong>.`,
+                        answer: mean
+                    }
+                },
+                () => {
+                    const data = [
+                        { label: 'Soccer', count: getRandomInt(5, 20) },
+                        { label: 'Rugby', count: getRandomInt(5, 20) },
+                        { label: 'Tennis', count: getRandomInt(5, 20) },
+                        { label: 'Cricket', count: getRandomInt(5, 20) },
+                    ];
+                    const maxCount = Math.max(...data.map(d => d.count));
+                    const totalStudents = data.reduce((sum, d) => sum + d.count, 0);
+
+                    const bars = data.map((item, i) => {
+                        const barHeight = (item.count / maxCount) * 80; // Max bar height is 80
+                        return `<g transform="translate(${20 + i * 45}, 0)">
+                                    <rect y="${100 - barHeight}" width="30" height="${barHeight}" fill="#60a5fa"></rect>
+                                    <text x="15" y="115" text-anchor="middle" font-size="10">${item.label}</text>
+                                    <text x="15" y="${95 - barHeight}" text-anchor="middle" font-size="10" fill="black">${item.count}</text>
+                                </g>`;
+                    }).join('');
+                    const svg = `<svg viewBox="0 0 200 120" class="mx-auto mt-4">${bars}</svg>`;
+                    
+                    return {
+                        question: `The bar chart shows the favourite sports of a group of students. How many students were surveyed in total?`,
+                        svg: svg,
+                        answer: totalStudents
                     };
                 }
             ],
@@ -233,6 +295,19 @@
                         question: `A library has ${num2} shelves. Each shelf can hold ${num1} books. What is the total number of books the library can hold?`,
                         answer: `${num1 * num2} books`
                     };
+                },
+                () => {
+                    const price = [20, 40, 50, 80][getRandomInt(0,3)];
+                    const percent = [10, 20, 25, 50][getRandomInt(0,3)];
+                    const dollarOff = getRandomInt(Math.round(price * (percent/100)) - 5, Math.round(price * (percent/100)) + 5);
+                    
+                    const percentDiscount = price * (percent/100);
+                    const betterDeal = percentDiscount > dollarOff ? `${percent}% off` : `$${dollarOff} off`;
+
+                    return {
+                        question: `An item costs <strong>$${price}</strong>. Which is the better deal: <strong>${percent}% off</strong> or <strong>$${dollarOff} off</strong>?`,
+                        answer: `The ${betterDeal} is the better deal.`
+                    }
                 }
             ],
             geometryMeasurement: [
@@ -240,13 +315,16 @@
                     const length = getRandomInt(5, 20);
                     const width = getRandomInt(3, 15);
                     const svg = `
-                        <svg viewBox="0 0 120 70" class="mx-auto mt-4 w-2/3">
-                            <rect x="10" y="10" width="100" height="50" stroke="black" fill="#e0f2fe" stroke-width="1"/>
-                            <text x="55" y="5" font-size="10" text-anchor="middle">${length} cm</text>
-                            <text x="5" y="40" font-size="10" text-anchor="middle" transform="rotate(-90, 5, 40)">${width} cm</text>
-                        </svg>`;
+                        <div class="w-full flex justify-center mt-4">
+                            <svg viewBox="0 0 140 90" class="w-2/3 max-w-[150px]">
+                                <rect x="20" y="20" width="100" height="50" stroke="black" fill="#e0f2fe" stroke-width="1"/>
+                                <text x="70" y="15" font-size="10" text-anchor="middle">${length} cm</text>
+                                <text x="10" y="45" font-size="10" text-anchor="middle" transform="rotate(-90, 10, 45)">${width} cm</text>
+                            </svg>
+                        </div>`;
                     return {
-                        question: `What is the perimeter of the rectangle shown below?${svg}`,
+                        question: `What is the perimeter of the rectangle shown below?`,
+                        svg: svg,
                         answer: `${2 * (length + width)} cm`
                     };
                 },
@@ -254,14 +332,17 @@
                     const length = getRandomInt(5, 12);
                     const width = getRandomInt(4, 9);
                      const svg = `
-                        <svg viewBox="0 0 120 70" class="mx-auto mt-4 w-2/3">
-                            <rect x="10" y="10" width="100" height="50" stroke="black" fill="#fef08a" stroke-width="1"/>
-                            <text x="60" y="35" font-size="10" text-anchor="middle">Area = ?</text>
-                            <text x="60" y="5" font-size="10" text-anchor="middle">${length} m</text>
-                            <text x="5" y="40" font-size="10" text-anchor="middle" transform="rotate(-90, 5, 40)">${width} m</text>
-                        </svg>`;
+                        <div class="w-full flex justify-center mt-4">
+                            <svg viewBox="0 0 140 90" class="w-2/3 max-w-[150px]">
+                                <rect x="20" y="20" width="100" height="50" stroke="black" fill="#fef08a" stroke-width="1"/>
+                                <text x="70" y="45" font-size="10" text-anchor="middle">Area = ?</text>
+                                <text x="70" y="15" font-size="10" text-anchor="middle">${length} m</text>
+                                <text x="10" y="45" font-size="10" text-anchor="middle" transform="rotate(-90, 10, 45)">${width} m</text>
+                            </svg>
+                        </div>`;
                     return {
-                        question: `A rectangular garden is ${length}m long and ${width}m wide. What is its area?${svg}`,
+                        question: `A rectangular garden is ${length}m long and ${width}m wide. What is its area?`,
+                        svg: svg,
                         answer: `${length * width} m²`
                     };
                 },
@@ -284,6 +365,32 @@
                         question: `A movie starts at <strong>${formatTime(startHour, startMin)}</strong> and runs for ${durationHours} hour${durationHours > 1 ? 's' : ''} and ${durationMins} minutes. What time does it finish?`,
                         answer: formatTime(endHour, endMin)
                     }
+                },
+                () => {
+                    const angleType = ['Acute', 'Obtuse', 'Right'][getRandomInt(0, 2)];
+                    let angle, pathD;
+
+                    switch (angleType) {
+                        case 'Acute':
+                            angle = getRandomInt(20, 70);
+                            pathD = `M 50 100 L 150 100 L ${50 + 80 * Math.cos(angle * Math.PI/180)} ${100 - 80 * Math.sin(angle * Math.PI/180)} Z`;
+                            break;
+                        case 'Obtuse':
+                            angle = getRandomInt(100, 160);
+                             pathD = `M 50 100 L 150 100 L ${50 + 80 * Math.cos(angle * Math.PI/180)} ${100 - 80 * Math.sin(angle * Math.PI/180)} Z`;
+                            break;
+                        case 'Right':
+                            angle = 90;
+                            pathD = `M 50 100 L 150 100 L 50 20 Z`;
+                            break;
+                    }
+                     const svg = `<svg viewBox="0 0 200 120" class="mx-auto mt-4"><path d="${pathD}" stroke="black" stroke-width="2" fill="#e0f2fe"/></svg>`;
+
+                    return {
+                        question: `What type of angle is shown below? (Acute, Obtuse, or Right)`,
+                        svg: svg,
+                        answer: angleType
+                    };
                 }
             ]
         };
@@ -312,9 +419,14 @@
             questions.forEach((q, index) => {
                 const questionBox = document.createElement('div');
                 questionBox.className = 'question-box bg-white p-5 rounded-xl shadow-sm border border-gray-200 flex flex-col justify-between';
+                
+                const questionText = `<p class="text-lg leading-relaxed"><strong class="mr-2">${index + 1}.</strong>${q.question}</p>`;
+                const svgContent = q.svg ? q.svg : '';
+
                 questionBox.innerHTML = `
                     <div>
-                        <p class="text-lg leading-relaxed"><strong class="mr-2">${index + 1}.</strong>${q.question}</p>
+                        ${questionText}
+                        ${svgContent}
                     </div>
                 `;
                 questionsGrid.appendChild(questionBox);
@@ -348,6 +460,10 @@
 
 </body>
 </html>
+
+
+
+
 
 
 
