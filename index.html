@@ -548,6 +548,12 @@
                 () => {
                     const width = getRandomInt(5, 8);
                     const height = getRandomInt(3, 5);
+                    const units = [
+                        { name: 'centimetre', symbol: 'cm²' },
+                        { name: 'metre', symbol: 'm²' }
+                    ];
+                    const chosenUnit = units[getRandomInt(0, units.length - 1)];
+
                     let grid = '';
                     for (let i = 0; i < height; i++) {
                         for (let j = 0; j < width; j++) {
@@ -556,9 +562,9 @@
                     }
                     const svg = `<svg viewBox="-1 -1 162 102" class="mx-auto mt-4">${grid}</svg>`;
                     return {
-                        question: `What is the area of the shape below, in unit squares?`,
+                        question: `Each square in the shape below represents one square <strong>${chosenUnit.name}</strong>. What is the total area of the shape?`,
                         svg: svg,
-                        answer: `${width * height} unit squares`
+                        answer: `${width * height} ${chosenUnit.symbol}`
                     };
                 }
             ]
@@ -631,6 +637,7 @@
 
 </body>
 </html>
+
 
 
 
