@@ -98,37 +98,18 @@
                     };
                 },
                 () => {
-                    const total = getRandomInt(20, 50) * 100;
-                    const divisor = [10, 100][getRandomInt(0, 1)];
+                    const denominator = [4, 6, 8][getRandomInt(0, 2)];
+                    const numerator = getRandomInt(1, denominator - 2);
                     return {
-                        question: `A factory produced ${total.toLocaleString()} toys. If they are packed in boxes of ${divisor}, how many boxes are needed?`,
-                        answer: `${(total / divisor).toLocaleString()} boxes`
-                    };
-                },
-                () => {
-                    const denominator = [3, 4, 5, 8][getRandomInt(0, 3)];
-                    const numerator = getRandomInt(1, denominator - 1);
-                    const whole = denominator * getRandomInt(2, 10);
-                    return {
-                        question: `Calculate <strong><sup>${numerator}</sup>&frasl;<sub>${denominator}</sub></strong> of ${whole}.`,
-                        answer: (whole / denominator) * numerator
-                    };
-                },
-                () => {
-                    const num = getRandomInt(100, 9999);
-                    const place = [10, 100, 1000][getRandomInt(0,2)];
-                    return {
-                        question: `Round the number <strong>${num.toLocaleString()}</strong> to the nearest ${place}.`,
-                        answer: Math.round(num / place) * place
-                    };
+                        question: `What is <strong><sup>${numerator}</sup>&frasl;<sub>${denominator}</sub> + <sup>1</sup>&frasl;<sub>${denominator}</sub></strong>?`,
+                        answer: `<sup>${numerator + 1}</sup>&frasl;<sub>${denominator}</sub>`
+                    }
                 },
                  () => {
-                    const startTemp = getRandomInt(-5, 5);
-                    const change = getRandomInt(5, 15);
                     return {
-                        question: `The temperature in the morning was ${startTemp}°C. By lunchtime, it had risen by ${change}°C. What was the new temperature?`,
-                        answer: `${startTemp + change}°C`
-                    };
+                        question: `A cake was cut into quarters and then each quarter was cut in half. How many pieces of cake were there?`,
+                        answer: '8 pieces'
+                    }
                 },
                 () => {
                     const num = getRandomInt(2000, 5000);
@@ -146,13 +127,20 @@
                 },
                 () => {
                     const timesTable = getRandomInt(3, 8);
-                    const multiples = [timesTable * 2, timesTable * 3, timesTable * 4, timesTable * 5];
-                    const nonMultiple = multiples[2] + getRandomInt(1, 3);
-                    const options = shuffleArray([...multiples.slice(0,3), nonMultiple]);
+                    const multiples = [timesTable * 2, timesTable * 3, timesTable * 4, timesTable * 5, timesTable * 6];
+                    const outlierIndex = getRandomInt(2, 3);
+                    const originalValue = multiples[outlierIndex];
+                    let outlier;
+                    do {
+                        outlier = originalValue + getRandomInt(1, 3) * (getRandomInt(0, 1) === 0 ? 1 : -1);
+                    } while (outlier % timesTable === 0); // Ensure the outlier is not another multiple
+                    
+                    multiples[outlierIndex] = outlier;
+
                     return {
-                        question: `Which number is NOT in the <strong>${timesTable}-times table</strong>? <br>(${options.join(', ')})`,
-                        answer: nonMultiple
-                    }
+                        question: `All of these numbers are multiples of <strong>${timesTable}</strong> except for one. Which one is it? <br><strong>${shuffleArray(multiples).join(', ')}</strong>`,
+                        answer: outlier
+                    };
                 }
             ],
             algebra: [
@@ -166,32 +154,35 @@
                         answer: nextNum
                     };
                 },
-                () => {
-                    const val = getRandomInt(2, 12);
-                    const multiplier = getRandomInt(3, 9);
-                    const result = val * multiplier;
+                 () => {
+                    const num1 = getRandomInt(2, 10);
+                    const num2 = getRandomInt(2, 10);
+                    const num3 = getRandomInt(2, 10);
+                    const answer = num3 + num2 - num1;
                     return {
-                        question: `Find the missing number: <strong>${multiplier} &times; ? = ${result}</strong>`,
-                        answer: val
-                    };
+                        question: `Find the value of the square: <strong>${num1} + &#9633; = ${num3} + ${num2}</strong>`,
+                        answer: answer
+                    }
                 },
                 () => {
                     const a = getRandomInt(2, 9);
                     const b = getRandomInt(10, 25);
+                    const sum = a + b;
+                    const operators = ['+', '-', '&times;', '&div;'];
+                    const correctAnswer = '-';
                     return {
-                        question: `If <strong>7 + &#9633; = ${b}</strong>, what is the value of the square?`,
-                        answer: `${b} - 7 = ${b - 7}`
+                        question: `If <strong>${a} + ${b} = ${sum}</strong>, then which symbol goes in the box? <br><strong>${sum} = ${b} [ &#9633; ] ${a}</strong> <br>(${operators.join(', ')})`,
+                        answer: correctAnswer
                     };
                 },
                 () => {
-                    const multiplier = getRandomInt(2, 5);
-                    const adder = getRandomInt(1, 10);
-                    const input = getRandomInt(3, 8);
-                    const output = (input * multiplier) + adder;
+                    const unknown = getRandomInt(2, 6);
+                    const num1 = unknown * getRandomInt(1, 4);
+                    const num2 = unknown * getRandomInt(5, 10);
                     return {
-                        question: `An input/output machine follows the rule: <strong>input &times; ${multiplier} + ${adder}</strong>. If the input is ${input}, what is the output?`,
-                        answer: output
-                    };
+                        question: `If <strong>${num1} &div; &#9633; = ${num1/unknown}</strong>, then what is <strong>${num2} &div; &#9633;</strong>?`,
+                        answer: num2 / unknown
+                    }
                 },
                 () => {
                     const addend1 = getRandomInt(20, 50);
@@ -202,24 +193,23 @@
                     }
                 },
                 () => {
-                    const num1 = getRandomInt(2, 8);
-                    const num2 = getRandomInt(2, 8);
-                    const num3 = getRandomInt(1, num1 + num2 - 1);
-                    return {
-                        question: `Balance the equation: <strong>${num1} + ${num2} = &#9633; + ${num3}</strong>`,
-                        answer: (num1 + num2) - num3
-                    }
-                },
-                () => {
                     const start = getRandomInt(1, 3);
                     const multiplier = getRandomInt(2, 4);
-                    const sequence = [start, start * multiplier, start * multiplier * multiplier];
-                    const outlier = sequence[2] + getRandomInt(1,5);
-                    const options = shuffleArray([sequence[0], sequence[1], sequence[2], outlier]);
+                    const sequence = [start, start * multiplier, start * multiplier * multiplier, start * multiplier * multiplier * multiplier];
+                    const outlierIndex = getRandomInt(1,2); // Corrupt the 2nd or 3rd term
+                    const originalValue = sequence[outlierIndex];
+                    let outlier;
+                    // Ensure the outlier isn't the same as another number in the sequence or a negative/zero value
+                    do {
+                         outlier = originalValue + getRandomInt(1,5) * (getRandomInt(0,1) ? 1 : -1);
+                    } while (sequence.includes(outlier) || outlier <= 0);
+
+                    sequence[outlierIndex] = outlier;
+                    
                     return {
-                        question: `Which number does not fit the pattern? <strong>${options.join(', ')}</strong>`,
+                        question: `There is a mistake in this pattern. Which number is incorrect? <strong>${sequence.join(', ')}</strong>`,
                         answer: outlier
-                    }
+                    };
                 }
             ],
             statistics: [
@@ -239,31 +229,20 @@
                         { label: 'Fish', percent: chosenPercents[2], color: '#fb923c' }
                     ];
 
-                    // Calculate the count for each category based on the total
-                    data.forEach(item => {
-                        item.count = (item.percent / 100) * total;
-                    });
-                    
-                    const targetItem = data[getRandomInt(0, data.length - 1)]; // Select a random target
-                    
-                    const cx = 140; 
-                    const cy = 60;
-                    const r = 50;
-                    let startAngle = -90; // Start at 12 o'clock
+                    data.forEach(item => { item.count = (item.percent / 100) * total; });
+                    const targetItem = data[getRandomInt(0, data.length - 1)];
+                    const cx = 140; const cy = 60; const r = 50;
+                    let startAngle = -90;
 
                     const paths = data.map(item => {
                         const angle = (item.percent / 100) * 360;
                         const endAngle = startAngle + angle;
-                        
                         const x1 = cx + r * Math.cos(startAngle * Math.PI / 180);
                         const y1 = cy + r * Math.sin(startAngle * Math.PI / 180);
                         const x2 = cx + r * Math.cos(endAngle * Math.PI / 180);
                         const y2 = cy + r * Math.sin(endAngle * Math.PI / 180);
-                        
                         const largeArcFlag = angle > 180 ? 1 : 0;
-
                         const d = `M ${cx},${cy} L ${x1},${y1} A ${r},${r} 0 ${largeArcFlag} 1 ${x2},${y2} Z`;
-                        
                         startAngle = endAngle;
                         return `<path d="${d}" fill="${item.color}" stroke="white" stroke-width="1.5"></path>`;
                     }).join('');
@@ -273,11 +252,7 @@
                          <text x="25" y="${34 + i * 20}" font-size="11" fill="black">${item.label}: ${item.percent}%</text>`
                     ).join('');
 
-                    const svg = `
-                        <svg viewBox="0 0 200 120" class="mx-auto mt-4">
-                            ${paths}
-                            ${legend}
-                        </svg>`;
+                    const svg = `<svg viewBox="0 0 200 120" class="mx-auto mt-4">${paths}${legend}</svg>`;
                     
                     return {
                         question: `A survey of <strong>${total}</strong> students asked for their favourite pet. Based on the chart, how many students chose ${targetItem.label.toLowerCase()}?`,
@@ -286,38 +261,39 @@
                     };
                 },
                 () => {
-                    const outcomes = ['Red', 'Blue', 'Green', 'Yellow'];
-                    const counts = [getRandomInt(1, 8), getRandomInt(1, 8), getRandomInt(1, 8), getRandomInt(1, 8)];
-                    const total = counts.reduce((a, b) => a + b, 0);
-                    const chosenColor = outcomes[getRandomInt(0, 1)];
-                    const chosenCount = chosenColor === 'Red' ? counts[0] : counts[1];
-
-                    return {
-                        question: `A bag contains ${counts[0]} red, ${counts[1]} blue, ${counts[2]} green, and ${counts[3]} yellow marbles. What is the probability of picking a <strong>${chosenColor.toLowerCase()}</strong> marble?`,
-                        answer: `${chosenCount}/${total}`
-                    };
-                },
-                () => {
-                    const data = [getRandomInt(5,15), getRandomInt(5,15), getRandomInt(5,15), getRandomInt(5,15), getRandomInt(5,15)];
-                    const sum = data.reduce((a,b) => a + b, 0);
-                    const mean = sum / data.length;
-                    return {
-                        question: `Find the mean (average) of the following numbers: <strong>${data.join(', ')}</strong>.`,
-                        answer: mean
-                    }
-                },
-                () => {
                     const data = [
                         { label: 'Soccer', count: getRandomInt(5, 20) },
                         { label: 'Rugby', count: getRandomInt(5, 20) },
                         { label: 'Tennis', count: getRandomInt(5, 20) },
                         { label: 'Cricket', count: getRandomInt(5, 20) },
                     ];
-                    const maxCount = Math.max(...data.map(d => d.count));
+                    
+                    // Sort to easily find min/max, and adjust to avoid ties
+                    data.sort((a,b) => a.count - b.count);
+                    if (data[0].count === data[1].count) {
+                        data[0].count = Math.max(1, data[0].count - 1);
+                    }
+                     if (data[3].count === data[2].count) {
+                        data[3].count += 1;
+                    }
+                    data.sort((a,b) => a.count - b.count);
+
+                    const maxVal = data[3].count;
+                    const minVal = data[0].count;
+                    const mostPopular = data[3].label;
+                    const leastPopular = data[0].label;
                     const totalStudents = data.reduce((sum, d) => sum + d.count, 0);
 
+                    const questionTypes = [
+                        { question: `How many students were surveyed in total?`, answer: totalStudents },
+                        { question: `Which sport was the most popular?`, answer: mostPopular },
+                        { question: `Which sport was the least popular?`, answer: leastPopular }
+                    ];
+                    
+                    const chosenQuestion = questionTypes[getRandomInt(0, questionTypes.length - 1)];
+
                     const bars = data.map((item, i) => {
-                        const barHeight = (item.count / maxCount) * 80; // Max bar height is 80
+                        const barHeight = (item.count / maxVal) * 80;
                         return `<g transform="translate(${20 + i * 45}, 0)">
                                     <rect y="${100 - barHeight}" width="30" height="${barHeight}" fill="#60a5fa"></rect>
                                     <text x="15" y="115" text-anchor="middle" font-size="10">${item.label}</text>
@@ -327,66 +303,22 @@
                     const svg = `<svg viewBox="0 0 200 120" class="mx-auto mt-4">${bars}</svg>`;
                     
                     return {
-                        question: `The bar chart shows the favourite sports of a group of students. How many students were surveyed in total?`,
+                        question: `The bar chart shows the favourite sports of a group of students. ${chosenQuestion.question}`,
                         svg: svg,
-                        answer: totalStudents
+                        answer: chosenQuestion.answer
                     };
-                },
-                () => {
-                    const green = getRandomInt(3, 8);
-                    const blue = getRandomInt(2, green-1);
-                    const moreLikely = green > blue ? 'green' : 'blue';
-                    return {
-                        question: `A cup contains <strong>${green} green</strong> marbles and <strong>${blue} blue</strong> marbles. Is it more likely, less likely, or equally likely that you will pick a green marble?`,
-                        answer: 'More likely'
-                    }
-                },
-                () => {
-                    const data = [
-                        {day: 'Mon', books: getRandomInt(2,5)},
-                        {day: 'Tue', books: getRandomInt(2,5)},
-                        {day: 'Wed', books: getRandomInt(2,5)},
-                        {day: 'Thu', books: getRandomInt(2,5)},
-                    ];
-                    const scale = 2;
-                    const targetDay = data[getRandomInt(0, data.length-1)];
-
-                    const pictos = data.map((d, i) => {
-                         let row = `<text x="5" y="${25 + i * 25}" font-size="12">${d.day}</text>`;
-                         for(let j=0; j<d.books; j++) {
-                             row += `<text x="${40 + j * 20}" y="${27 + i * 25}" font-size="15">&#128214;</text>`; // Book emoji
-                         }
-                         return row;
-                    }).join('');
-
-                    const svg = `<svg viewBox="0 0 200 130" class="mx-auto mt-4">
-                                    ${pictos}
-                                    <text x="5" y="125" font-size="12">Key: &#128214; = ${scale} books read</text>
-                                </svg>`;
-
-                    return {
-                        question: `The pictograph shows books read by a student. How many books were read on <strong>${targetDay.day}</strong>?`,
-                        svg: svg,
-                        answer: targetDay.books * scale
-                    }
                 },
                  () => {
                     const players = [
-                        {name: 'Sam', goals: getRandomInt(3, 8)},
-                        {name: 'Jen', goals: getRandomInt(3, 8)},
-                        {name: 'Mo', goals: getRandomInt(3, 8)},
-                        {name: 'Li', goals: getRandomInt(3, 8)},
+                        {name: 'Sam', goals: getRandomInt(3, 8)}, {name: 'Jen', goals: getRandomInt(3, 8)},
+                        {name: 'Mo', goals: getRandomInt(3, 8)}, {name: 'Li', goals: getRandomInt(3, 8)},
                     ].sort((a,b) => a.goals - b.goals);
 
                     const threshold = players[getRandomInt(1,2)].goals;
                     const playersBelow = players.filter(p => p.goals < threshold).length;
                     
-                    let table = `<table class="w-full text-center mt-4 border-collapse">
-                                    <thead><tr><th class="border p-2">Player</th><th class="border p-2">Goals</th></tr></thead>
-                                    <tbody>`;
-                    players.forEach(p => {
-                        table += `<tr><td class="border p-2">${p.name}</td><td class="border p-2">${p.goals}</td></tr>`;
-                    });
+                    let table = `<table class="w-full text-center mt-4 border-collapse"><thead><tr><th class="border p-2">Player</th><th class="border p-2">Goals</th></tr></thead><tbody>`;
+                    players.forEach(p => { table += `<tr><td class="border p-2">${p.name}</td><td class="border p-2">${p.goals}</td></tr>`; });
                     table += `</tbody></table>`;
                     
                     return {
@@ -396,50 +328,59 @@
                 }
             ],
             numberStrategies: [
-                () => {
-                    const price1 = (getRandomInt(15, 45) / 10).toFixed(2);
-                    const price2 = (getRandomInt(15, 45) / 10).toFixed(2);
-                    const totalCost = (parseFloat(price1) + parseFloat(price2)).toFixed(2);
-                    const paid = [10, 20][getRandomInt(0,1)];
+                 () => {
+                    const stripsPerWhetu = [4, 5, 6][getRandomInt(0, 2)];
+                    const totalStrips = stripsPerWhetu * getRandomInt(12, 25);
                     return {
-                        question: `You buy an apple for <strong>$${price1}</strong> and a banana for <strong>$${price2}</strong>. How much change do you get from a $${paid} note?`,
-                        answer: `$${(paid - totalCost).toFixed(2)}`
+                        question: `One whetū (star) is made from ${stripsPerWhetu} strips of harakeke (flax). How many whetū will <strong>${totalStrips}</strong> strips of harakeke make?`,
+                        answer: `${totalStrips / stripsPerWhetu} whetū`
                     };
                 },
-                () => {
-                    const num1 = getRandomInt(25, 99);
-                    const num2 = getRandomInt(3, 9);
-                    return {
-                        question: `A library has ${num2} shelves. Each shelf can hold ${num1} books. What is the total number of books the library can hold?`,
-                        answer: `${num1 * num2} books`
-                    };
-                },
-                () => {
-                    const price = [20, 40, 50, 80][getRandomInt(0,3)];
-                    const percent = [10, 20, 25, 50][getRandomInt(0,3)];
-                    const dollarOff = getRandomInt(Math.round(price * (percent/100)) - 5, Math.round(price * (percent/100)) + 5);
+                 () => {
+                    const coveredRows = getRandomInt(3, 8);
+                    const coveredCols = getRandomInt(3, 8);
+                    const coveredCount = coveredRows * coveredCols;
                     
-                    const percentDiscount = price * (percent/100);
-                    const betterDeal = percentDiscount > dollarOff ? `${percent}% off` : `$${dollarOff} off`;
+                    let beads = '';
+                    for (let r = 0; r < 10; r++) {
+                        for (let c = 0; c < 10; c++) {
+                            const isCovered = r < coveredRows && c < coveredCols;
+                            beads += `<circle cx="${10 + c * 10}" cy="${10 + r * 10}" r="4" fill="${isCovered ? '#a1a1aa' : '#ef4444'}" />`;
+                        }
+                    }
+                    const cover = `<rect x="4" y="4" width="${coveredCols * 10}" height="${coveredRows * 10}" fill="#d4d4d8" stroke="#71717a" stroke-width="1" />`;
+                    const svg = `<svg viewBox="0 0 110 110" class="mx-auto mt-4">${beads}${cover}</svg>`;
 
                     return {
-                        question: `An item costs <strong>$${price}</strong>. Which is the better deal: <strong>${percent}% off</strong> or <strong>$${dollarOff} off</strong>?`,
-                        answer: `The ${betterDeal} is the better deal.`
+                        question: `There are 100 beads on the frame. How many have been covered up?`,
+                        svg: svg,
+                        answer: `${coveredCount} beads`
                     }
                 },
                 () => {
-                    const totalCost = getRandomInt(210, 290); // in cents
-                    const change = 300 - totalCost;
-                    const coins = {50: 0, 20: 0, 10: 0};
-                    let remaining = change;
-                    if (remaining >= 50) { coins[50] = 1; remaining -= 50; }
-                    coins[20] = Math.floor(remaining/20); remaining %= 20;
-                    coins[10] = Math.round(remaining/10);
-                    let answerString = Object.entries(coins).filter(([_,v]) => v > 0).map(([k,v]) => `${v} x ${k}c`).join(', ');
-
                     return {
-                        question: `An item costs <strong>$${(totalCost/100).toFixed(2)}</strong>. If you pay with a <strong>$2</strong> and a <strong>$1</strong> coin, what change will you get?`,
-                        answer: answerString || 'No change'
+                        question: `True or False: If 2 ice creams are the same price as 3 chocolate bars, then a chocolate bar costs less than an ice cream.`,
+                        answer: 'True'
+                    };
+                },
+                () => {
+                    const ratio1 = 2;
+                    const ratio2 = 5;
+                    const multiplier = getRandomInt(3, 7);
+                    const num1 = ratio1 * multiplier;
+                    const num2 = ratio2 * multiplier;
+                    return {
+                        question: `Jamal is making a necklace. He uses ${ratio1} spotty beads for every ${ratio2} stripey beads. If he uses <strong>${num1} spotty beads</strong>, how many stripey beads will he need?`,
+                        answer: `${num2} stripey beads`
+                    }
+                },
+                () => {
+                    const num1 = getRandomInt(800, 950);
+                    const num2 = getRandomInt(600, 790);
+                    const num3 = getRandomInt(100, 250);
+                    return {
+                        question: `What is <strong>${num1} + ${num2} + ${num3}</strong>?`,
+                        answer: num1 + num2 + num3
                     }
                 },
                 () => {
@@ -450,152 +391,57 @@
                         question: `A farmer collected ${num1} eggs on Monday, ${num2} on Tuesday, and ${num3} on Wednesday. How many eggs were collected in total?`,
                         answer: num1 + num2 + num3
                     }
-                },
-                () => {
-                    const num1 = getRandomInt(50, 99);
-                    const num2 = getRandomInt(20, num1-10);
-                    return {
-                        question: `There are ${num1} students in the hall. If ${num2} students leave, how many are left?`,
-                        answer: num1 - num2
-                    }
-                },
-                () => {
-                    const num1 = getRandomInt(10, 20);
-                    const num2 = getRandomInt(10, 20);
-                    const num3 = [3, 4, 5][getRandomInt(0,2)];
-                    return {
-                        question: `Sarah has ${num1} stickers, and Tom has ${num2}. They share them equally among ${num3} friends. How many stickers does each friend get?`,
-                        answer: Math.floor((num1 + num2) / num3)
-                    }
                 }
             ],
             geometryMeasurement: [
                 () => {
-                    const length = getRandomInt(5, 20);
-                    const width = getRandomInt(3, 15);
-                    const svg = `
-                        <div class="w-full flex justify-center mt-4">
-                            <svg viewBox="0 0 140 90" class="w-2/3 max-w-[150px]">
-                                <rect x="20" y="20" width="100" height="50" stroke="black" fill="#e0f2fe" stroke-width="1"/>
-                                <text x="70" y="15" font-size="10" text-anchor="middle">${length} cm</text>
-                                <text x="10" y="45" font-size="10" text-anchor="middle" transform="rotate(-90, 10, 45)">${width} cm</text>
-                            </svg>
-                        </div>`;
-                    return {
-                        question: `What is the perimeter of the rectangle shown below (not to scale)?`,
-                        svg: svg,
-                        answer: `${2 * (length + width)} cm`
-                    };
-                },
-                () => {
-                    const length = getRandomInt(5, 12);
-                    const width = getRandomInt(4, 9);
-                     const svg = `
-                        <div class="w-full flex justify-center mt-4">
-                            <svg viewBox="0 0 140 90" class="w-2/3 max-w-[150px]">
-                                <rect x="20" y="20" width="100" height="50" stroke="black" fill="#fef08a" stroke-width="1"/>
-                                <text x="70" y="45" font-size="10" text-anchor="middle">Area = ?</text>
-                                <text x="70" y="15" font-size="10" text-anchor="middle">${length} m</text>
-                                <text x="10" y="45" font-size="10" text-anchor="middle" transform="rotate(-90, 10, 45)">${width} m</text>
-                            </svg>
-                        </div>`;
-                    return {
-                        question: `A rectangular garden is ${length}m long and ${width}m wide. What is its area?`,
-                        svg: svg,
-                        answer: `${length * width} m²`
-                    };
-                },
-                () => {
-                    const startHour = getRandomInt(8, 10);
-                    const startMin = getRandomInt(0, 59);
-                    const durationHours = getRandomInt(1, 3);
-                    const durationMins = getRandomInt(5, 55);
+                    const hour = getRandomInt(1, 12);
+                    const minute = getRandomInt(0, 11) * 5;
+                    const hourAngle = (hour % 12 + minute / 60) * 30;
+                    const minuteAngle = minute * 6;
                     
-                    let endMin = startMin + durationMins;
-                    let endHour = startHour + durationHours;
-                    if(endMin >= 60){
-                        endMin -= 60;
-                        endHour += 1;
+                    let markers = '';
+                    for (let i = 1; i <= 12; i++) {
+                        const angle = i * 30 * Math.PI / 180;
+                        const x = 50 + 40 * Math.sin(angle);
+                        const y = 50 - 40 * Math.cos(angle);
+                        markers += `<text x="${x}" y="${y+3}" text-anchor="middle" font-size="8">${i}</text>`;
                     }
 
-                    const formatTime = (h, m) => `${h % 12 === 0 ? 12 : h % 12}:${m.toString().padStart(2, '0')} ${h < 12 ? 'AM' : 'PM'}`;
-
-                    return {
-                        question: `A movie starts at <strong>${formatTime(startHour, startMin)}</strong> and runs for ${durationHours} hour${durationHours > 1 ? 's' : ''} and ${durationMins} minutes. What time does it finish?`,
-                        answer: formatTime(endHour, endMin)
-                    }
-                },
-                () => {
-                    const angleType = ['Acute', 'Obtuse', 'Right'][getRandomInt(0, 2)];
-                    let angle, pathD;
-
-                    switch (angleType) {
-                        case 'Acute':
-                            angle = getRandomInt(20, 70);
-                            pathD = `M 50 100 L 150 100 L ${50 + 80 * Math.cos(angle * Math.PI/180)} ${100 - 80 * Math.sin(angle * Math.PI/180)} Z`;
-                            break;
-                        case 'Obtuse':
-                            angle = getRandomInt(100, 160);
-                             pathD = `M 50 100 L 150 100 L ${50 + 80 * Math.cos(angle * Math.PI/180)} ${100 - 80 * Math.sin(angle * Math.PI/180)} Z`;
-                            break;
-                        case 'Right':
-                            angle = 90;
-                            pathD = `M 50 100 L 150 100 L 50 20 Z`;
-                            break;
-                    }
-                     const svg = `<svg viewBox="0 0 200 120" class="mx-auto mt-4"><path d="${pathD}" stroke="black" stroke-width="2" fill="#e0f2fe"/></svg>`;
-
-                    return {
-                        question: `What type of angle is shown below? (Acute, Obtuse, or Right)`,
-                        svg: svg,
-                        answer: angleType
-                    };
-                },
-                () => {
-                    const width = getRandomInt(5, 8);
-                    const height = getRandomInt(3, 5);
-                    let grid = '';
-                    for (let i = 0; i < height; i++) {
-                        for (let j = 0; j < width; j++) {
-                            grid += `<rect x="${j * 20}" y="${i * 20}" width="20" height="20" stroke="gray" fill="#a7f3d0"/>`;
-                        }
-                    }
-                    const svg = `<svg viewBox="-1 -1 162 102" class="mx-auto mt-4">${grid}</svg>`;
-                    return {
-                        question: `What is the area of the shape below, in unit squares?`,
-                        svg: svg,
-                        answer: `${width * height} unit squares`
-                    };
-                },
-                () => {
-                    const shape = 'M 20 20 L 60 20 L 60 40 L 40 40 L 40 60 L 20 60 Z';
-                    const svg = `<svg viewBox="0 0 150 100" class="mx-auto mt-4">
-                                    <path d="${shape}" fill="#facc15"/>
-                                    <path d="${shape}" transform="rotate(-90 75 50)" fill="#fb923c" opacity="0.7"/>
-                                    <circle cx="75" cy="50" r="3" fill="black" />
-                                    <line x1="75" y1="50" x2="110" y2="50" stroke="black" stroke-dasharray="2,2"/>
-                                    <text x="115" y="54" font-size="10">Start</text>
-                                    <path d="M 75 15 A 35 35 0 0 0 40 50" fill="none" stroke="black"/>
-                                    <polygon points="40,45 35,50 40,55" fill="black"/>
+                    const svg = `<svg viewBox="0 0 100 100" class="mx-auto mt-4">
+                                    <circle cx="50" cy="50" r="45" stroke="black" fill="white" />
+                                    ${markers}
+                                    <line x1="50" y1="50" x2="${50 + 25 * Math.sin(hourAngle * Math.PI / 180)}" y2="${50 - 25 * Math.cos(hourAngle * Math.PI / 180)}" stroke="black" stroke-width="3" />
+                                    <line x1="50" y1="50" x2="${50 + 35 * Math.sin(minuteAngle * Math.PI / 180)}" y2="${50 - 35 * Math.cos(minuteAngle * Math.PI / 180)}" stroke="black" stroke-width="2" />
+                                    <circle cx="50" cy="50" r="3" fill="black" />
                                 </svg>`;
+                    
                     return {
-                        question: 'What does the yellow shape look like after a quarter turn (90°) anti-clockwise around the black dot?',
+                        question: `What time is shown on the clock?`,
                         svg: svg,
-                        answer: 'The orange shape'
+                        answer: `${hour}:${minute.toString().padStart(2, '0')}`
                     }
                 },
-                () => {
-                    const shape = 'M 20 20 L 50 20 L 50 60 L 20 60 Z';
-                    const svg = `<svg viewBox="0 0 150 100" class="mx-auto mt-4">
-                                    <path d="${shape}" fill="#a5b4fc"/>
-                                    <line x1="75" y1="10" x2="75" y2="90" stroke="black" stroke-dasharray="3,3"/>
-                                    <path d="M 130 20 L 100 20 L 100 60 L 130 60 Z" fill="#67e8f9" opacity="0.8"/>
-                                </svg>`;
-                    return {
-                        question: 'If the purple shape is reflected in the mirror line, what will it look like?',
-                        svg: svg,
-                        answer: 'The blue shape'
+                 () => {
+                    const length = (getRandomInt(1, 8) + getRandomInt(0,1) * 0.5 + 2).toFixed(1);
+                    const scaleFactor = 20;
+                    let markings = '';
+                    for(let i=0; i<=10; i++){
+                        markings += `<line x1="${10 + i * scaleFactor}" y1="40" x2="${10 + i * scaleFactor}" y2="${i%2===0 ? 30:35}" stroke="black" />`;
+                        if(i%2===0) markings += `<text x="${10 + i * scaleFactor}" y="25" text-anchor="middle" font-size="8">${i}</text>`;
                     }
+                    const svg = `<svg viewBox="0 0 230 60" class="mx-auto mt-4">
+                                    <rect x="10" y="45" width="${length * scaleFactor}" height="10" fill="#fca5a5" />
+                                    <line x1="10" y1="40" x2="210" y2="40" stroke="black" />
+                                    ${markings}
+                                    <text x="218" y="40" font-size="8" dominant-baseline="middle">cm</text>
+                                </svg>`;
+
+                    return {
+                        question: 'How long is the red bar in centimetres?',
+                        svg: svg,
+                        answer: `${length} cm`
+                    };
                 },
                 () => {
                     const ml = getRandomInt(1,4) * 5 + 50;
@@ -618,6 +464,22 @@
                         svg: svg,
                         answer: `${ml} ml`
                     }
+                },
+                () => {
+                    const width = getRandomInt(5, 8);
+                    const height = getRandomInt(3, 5);
+                    let grid = '';
+                    for (let i = 0; i < height; i++) {
+                        for (let j = 0; j < width; j++) {
+                            grid += `<rect x="${j * 20}" y="${i * 20}" width="20" height="20" stroke="gray" fill="#a7f3d0"/>`;
+                        }
+                    }
+                    const svg = `<svg viewBox="-1 -1 162 102" class="mx-auto mt-4">${grid}</svg>`;
+                    return {
+                        question: `What is the area of the shape below, in unit squares?`,
+                        svg: svg,
+                        answer: `${width * height} unit squares`
+                    };
                 }
             ]
         };
@@ -653,7 +515,9 @@
                 questionBox.innerHTML = `
                     <div>
                         ${questionText}
-                        ${svgContent}
+                        <div class="w-full flex justify-center mt-4">
+                            ${svgContent}
+                        </div>
                     </div>
                 `;
                 questionsGrid.appendChild(questionBox);
@@ -687,14 +551,4 @@
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
 
