@@ -246,7 +246,7 @@
 
                     data.forEach(item => { item.count = (item.percent / 100) * total; });
                     const targetItem = data[getRandomInt(0, data.length - 1)];
-                    const cx = 140; const cy = 60; const r = 50;
+                    const cx = 160; const cy = 60; const r = 50;
                     let startAngle = -90;
 
                     const paths = data.map(item => {
@@ -267,7 +267,7 @@
                          <text x="25" y="${34 + i * 20}" font-size="11" fill="black">${item.label}: ${item.percent}%</text>`
                     ).join('');
 
-                    const svg = `<svg viewBox="0 0 200 120" class="mx-auto mt-4">${paths}${legend}</svg>`;
+                    const svg = `<svg viewBox="0 0 220 120" class="mx-auto mt-4">${paths}${legend}</svg>`;
                     
                     return {
                         question: `A survey of <strong>${total}</strong> students asked for their favourite ${chosenSet.context}. Based on the chart, how many students chose ${targetItem.label}?`,
@@ -615,4 +615,5 @@
 
 </body>
 </html>
+
 
