@@ -106,9 +106,17 @@
                     }
                 },
                  () => {
+                    const scenarios = [
+                        { item: 'cake', action: 'cut into quarters', subAction: 'each quarter was cut in half', pieces: 8, unit: 'pieces' },
+                        { item: 'pizza', action: 'cut into quarters', subAction: 'each quarter was cut in half', pieces: 8, unit: 'slices' },
+                        { item: 'cake', action: 'cut in half', subAction: 'each half was cut into thirds', pieces: 6, unit: 'pieces' },
+                        { item: 'pizza', action: 'cut in half', subAction: 'each half was cut into thirds', pieces: 6, unit: 'slices' },
+                    ];
+                    const scenario = scenarios[getRandomInt(0, scenarios.length - 1)];
+
                     return {
-                        question: `A cake was cut into quarters and then each quarter was cut in half. How many pieces of cake were there?`,
-                        answer: '8 pieces'
+                        question: `A ${scenario.item} was ${scenario.action} and then ${scenario.subAction}. How many ${scenario.unit} of ${scenario.item} were there?`,
+                        answer: `${scenario.pieces} ${scenario.unit}`
                     }
                 },
                 () => {
@@ -169,7 +177,7 @@
                     const b = getRandomInt(10, 25);
                     const sum = a + b;
                     const operators = ['+', '-', '&times;', '&div;'];
-                    const correctAnswer = '-';
+                    const correctAnswer = '+';
                     return {
                         question: `If <strong>${a} + ${b} = ${sum}</strong>, then which symbol goes in the box? <br><strong>${sum} = ${b} [ &#9633; ] ${a}</strong> <br>(${operators.join(', ')})`,
                         answer: correctAnswer
@@ -192,16 +200,16 @@
                         answer: sum - addend1
                     }
                 },
-                () => {
+                 () => {
                     const start = getRandomInt(1, 3);
                     const multiplier = getRandomInt(2, 4);
+                    // Extend the sequence to make the pattern clearer
                     const sequence = [start, start * multiplier, start * multiplier * multiplier, start * multiplier * multiplier * multiplier];
-                    const outlierIndex = getRandomInt(1,2); // Corrupt the 2nd or 3rd term
+                    const outlierIndex = getRandomInt(1, 2); // Corrupt the 2nd or 3rd term
                     const originalValue = sequence[outlierIndex];
                     let outlier;
-                    // Ensure the outlier isn't the same as another number in the sequence or a negative/zero value
                     do {
-                         outlier = originalValue + getRandomInt(1,5) * (getRandomInt(0,1) ? 1 : -1);
+                        outlier = originalValue + getRandomInt(1, 5) * (getRandomInt(0, 1) ? 1 : -1);
                     } while (sequence.includes(outlier) || outlier <= 0);
 
                     sequence[outlierIndex] = outlier;
@@ -214,6 +222,13 @@
             ],
             statistics: [
                 () => {
+                    const sets = [
+                        { context: 'pets', items: ['Cats', 'Dogs', 'Fish'] },
+                        { context: 'subjects', items: ['Maths', 'Reading', 'Art'] },
+                        { context: 'seasons', items: ['Summer', 'Winter', 'Autumn'] }
+                    ];
+                    const chosenSet = sets[getRandomInt(0, sets.length - 1)];
+
                     const total = [40, 50, 60, 80, 100][getRandomInt(0, 4)];
                     const percentCombinations = [
                         [10, 20, 70], [10, 30, 60], [10, 40, 50],
@@ -223,17 +238,10 @@
 
                     const chosenPercents = shuffleArray(percentCombinations[getRandomInt(0, percentCombinations.length - 1)]);
 
-                    const categorySets = [
-                        { context: 'pet', labels: ['Cats', 'Dogs', 'Fish'] },
-                        { context: 'subject', labels: ['Maths', 'Reading', 'Art'] },
-                        { context: 'season', labels: ['Summer', 'Winter', 'Autumn'] }
-                    ];
-                    const chosenSet = categorySets[getRandomInt(0, categorySets.length - 1)];
-
                     const data = [
-                        { label: chosenSet.labels[0], percent: chosenPercents[0], color: '#60a5fa' },
-                        { label: chosenSet.labels[1], percent: chosenPercents[1], color: '#4ade80' },
-                        { label: chosenSet.labels[2], percent: chosenPercents[2], color: '#fb923c' }
+                        { label: chosenSet.items[0], percent: chosenPercents[0], color: '#60a5fa' },
+                        { label: chosenSet.items[1], percent: chosenPercents[1], color: '#4ade80' },
+                        { label: chosenSet.items[2], percent: chosenPercents[2], color: '#fb923c' }
                     ];
 
                     data.forEach(item => { item.count = (item.percent / 100) * total; });
@@ -262,24 +270,24 @@
                     const svg = `<svg viewBox="0 0 200 120" class="mx-auto mt-4">${paths}${legend}</svg>`;
                     
                     return {
-                        question: `A survey of <strong>${total}</strong> students asked for their favourite ${chosenSet.context}. Based on the chart, how many students chose ${targetItem.label.toLowerCase()}?`,
+                        question: `A survey of <strong>${total}</strong> students asked for their favourite ${chosenSet.context}. Based on the chart, how many students chose ${targetItem.label}?`,
                         svg: svg,
                         answer: targetItem.count
                     };
                 },
                 () => {
-                    const categorySets = [
-                        { context: 'sports', labels: ['Soccer', 'Rugby', 'Tennis', 'Cricket'] },
-                        { context: 'fruits', labels: ['Apple', 'Banana', 'Orange', 'Grapes'] },
-                        { context: 'flavours', labels: ['Choc', 'Vanilla', 'Mint', 'Berry'] }
+                    const sets = [
+                        { context: 'sports', items: ['Soccer', 'Rugby', 'Tennis', 'Cricket'] },
+                        { context: 'fruits', items: ['Apple', 'Banana', 'Orange', 'Grape'] },
+                        { context: 'flavours', items: ['Choc', 'Vanilla', 'Berry', 'Mint'] }
                     ];
-                    const chosenSet = categorySets[getRandomInt(0, categorySets.length - 1)];
+                    const chosenSet = sets[getRandomInt(0, sets.length - 1)];
 
                     const data = [
-                        { label: chosenSet.labels[0], count: getRandomInt(5, 20) },
-                        { label: chosenSet.labels[1], count: getRandomInt(5, 20) },
-                        { label: chosenSet.labels[2], count: getRandomInt(5, 20) },
-                        { label: chosenSet.labels[3], count: getRandomInt(5, 20) },
+                        { label: chosenSet.items[0], count: getRandomInt(5, 20) },
+                        { label: chosenSet.items[1], count: getRandomInt(5, 20) },
+                        { label: chosenSet.items[2], count: getRandomInt(5, 20) },
+                        { label: chosenSet.items[3], count: getRandomInt(5, 20) },
                     ];
                     
                     // Sort to easily find min/max, and adjust to avoid ties
@@ -293,21 +301,21 @@
                     data.sort((a,b) => a.count - b.count);
 
                     const maxVal = data[3].count;
-                    const minVal = data[0].count;
                     const mostPopular = data[3].label;
                     const leastPopular = data[0].label;
                     const totalStudents = data.reduce((sum, d) => sum + d.count, 0);
 
+                    const singularContext = chosenSet.context.slice(0, -1); // E.g., 'sports' becomes 'sport'
                     const questionTypes = [
                         { question: `How many students were surveyed in total?`, answer: totalStudents },
-                        { question: `Which sport was the most popular?`, answer: mostPopular },
-                        { question: `Which sport was the least popular?`, answer: leastPopular }
+                        { question: `Which ${singularContext} was the most popular?`, answer: mostPopular },
+                        { question: `Which ${singularContext} was the least popular?`, answer: leastPopular }
                     ];
                     
                     const chosenQuestion = questionTypes[getRandomInt(0, questionTypes.length - 1)];
 
                     const bars = data.map((item, i) => {
-                        const barHeight = (item.count / maxVal) * 80;
+                        const barHeight = (item.count / (maxVal + 2)) * 80; // Add padding to max val
                         return `<g transform="translate(${20 + i * 45}, 0)">
                                     <rect y="${100 - barHeight}" width="30" height="${barHeight}" fill="#60a5fa"></rect>
                                     <text x="15" y="115" text-anchor="middle" font-size="10">${item.label}</text>
@@ -393,66 +401,36 @@
                 },
                 () => {
                     const scenarios = [
-                        {
-                            question: `True or False: If 2 ice creams are the same price as 3 chocolate bars, then a chocolate bar costs less than an ice cream.`,
-                            answer: 'True'
-                        },
-                        {
-                            question: `True or False: If a cheetah can run twice as fast as a rabbit, then a rabbit is slower than a cheetah.`,
-                            answer: 'True'
-                        },
-                        {
-                            question: `True or False: If 4 apples weigh the same as 1 pineapple, then an apple is lighter than a pineapple.`,
-                            answer: 'True'
-                        }
+                        { item1: 'ice creams', item2: 'chocolate bars', num1: 2, num2: 3, comparison: 'costs less than' },
+                        { item1: 'cheetahs', item2: 'racehorses', num1: 1, num2: 2, comparison: 'is slower than' },
+                        { item1: 'watermelons', item2: 'apples', num1: 1, num2: 8, comparison: 'weighs less than' }
                     ];
-                    return scenarios[getRandomInt(0, scenarios.length - 1)];
+                    const scenario = scenarios[getRandomInt(0, scenarios.length - 1)];
+                    const singularItem2 = scenario.item2.slice(0,-1);
+
+                    return {
+                        question: `True or False: If ${scenario.num1} ${scenario.item1} are the same price/speed/weight as ${scenario.num2} ${scenario.item2}, then a single ${singularItem2} ${scenario.comparison} a single ${scenario.item1.slice(0,-1)}.`,
+                        answer: 'True'
+                    };
                 },
                 () => {
                     const scenarios = [
-                        {
-                            generate: () => {
-                                const ratio1 = 2;
-                                const ratio2 = 5;
-                                const multiplier = getRandomInt(3, 7);
-                                const num1 = ratio1 * multiplier;
-                                const num2 = ratio2 * multiplier;
-                                return {
-                                    question: `Jamal is making a necklace. He uses ${ratio1} spotty beads for every ${ratio2} stripey beads. If he uses <strong>${num1} spotty beads</strong>, how many stripey beads will he need?`,
-                                    answer: `${num2} stripey beads`
-                                };
-                            }
-                        },
-                        {
-                            generate: () => {
-                                const ratio1 = 5;
-                                const ratio2 = 2;
-                                const multiplier = getRandomInt(3, 7);
-                                const num1 = ratio1 * multiplier;
-                                const num2 = ratio2 * multiplier;
-                                return {
-                                    question: `Sofia is building a Lego tower. She uses ${ratio1} square blocks for every ${ratio2} rectangle blocks. If she has <strong>${num1} square blocks</strong>, how many rectangle blocks does she use?`,
-                                    answer: `${num2} rectangle blocks`
-                                };
-                            }
-                        },
-                        {
-                            generate: () => {
-                                const ratio1 = 3;
-                                const ratio2 = 2;
-                                const multiplier = getRandomInt(3, 7);
-                                const num1 = ratio1 * multiplier;
-                                const num2 = ratio2 * multiplier;
-                                return {
-                                    question: `Amira is making fruit kebabs. She puts ${ratio1} strawberries for every ${ratio2} pieces of banana. If she uses <strong>${num1} strawberries</strong>, how many pieces of banana will she need?`,
-                                    answer: `${num2} pieces of banana`
-                                };
-                            }
-                        }
+                        { name: 'Jamal', action: 'making a necklace', item1: 'spotty beads', item2: 'stripey beads' },
+                        { name: 'Sofia', action: 'building a Lego tower', item1: 'square blocks', item2: 'rectangle blocks' },
+                        { name: 'Amira', action: 'making fruit kebabs', item1: 'strawberries', item2: 'pieces of banana' }
                     ];
+                    const scenario = scenarios[getRandomInt(0, scenarios.length - 1)];
                     
-                    const chosenScenario = scenarios[getRandomInt(0, scenarios.length - 1)];
-                    return chosenScenario.generate();
+                    const ratio1 = getRandomInt(2,4);
+                    const ratio2 = getRandomInt(ratio1 + 1, 7);
+                    const multiplier = getRandomInt(3, 7);
+                    const num1 = ratio1 * multiplier;
+                    const num2 = ratio2 * multiplier;
+
+                    return {
+                        question: `${scenario.name} is ${scenario.action}. They use ${ratio1} ${scenario.item1} for every ${ratio2} ${scenario.item2}. If they use <strong>${num1} ${scenario.item1}</strong>, how many ${scenario.item2} will they need?`,
+                        answer: `${num2} ${scenario.item2}`
+                    }
                 },
                 () => {
                     const num1 = getRandomInt(800, 950);
@@ -460,7 +438,7 @@
                     const num3 = getRandomInt(100, 250);
                     return {
                         question: `What is <strong>${num1} + ${num2} + ${num3}</strong>?`,
-                        answer: num1 + num2 + num3
+                        answer: (num1 + num2 + num3).toLocaleString()
                     }
                 },
                 () => {
@@ -510,11 +488,11 @@
                         markings += `<line x1="${10 + i * scaleFactor}" y1="40" x2="${10 + i * scaleFactor}" y2="${i%2===0 ? 30:35}" stroke="black" />`;
                         if(i%2===0) markings += `<text x="${10 + i * scaleFactor}" y="25" text-anchor="middle" font-size="8">${i}</text>`;
                     }
-                    const svg = `<svg viewBox="0 0 230 60" class="mx-auto mt-4">
+                    const svg = `<svg viewBox="0 0 235 60" class="mx-auto mt-4">
                                     <rect x="10" y="45" width="${length * scaleFactor}" height="10" fill="#fca5a5" />
                                     <line x1="10" y1="40" x2="210" y2="40" stroke="black" />
                                     ${markings}
-                                    <text x="218" y="40" font-size="8" dominant-baseline="middle">cm</text>
+                                    <text x="222" y="40" font-size="8" dominant-baseline="middle">cm</text>
                                 </svg>`;
 
                     return {
@@ -637,7 +615,4 @@
 
 </body>
 </html>
-
-
-
 
