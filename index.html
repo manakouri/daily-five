@@ -223,10 +223,17 @@
 
                     const chosenPercents = shuffleArray(percentCombinations[getRandomInt(0, percentCombinations.length - 1)]);
 
+                    const categorySets = [
+                        { context: 'pet', labels: ['Cats', 'Dogs', 'Fish'] },
+                        { context: 'subject', labels: ['Maths', 'Reading', 'Art'] },
+                        { context: 'season', labels: ['Summer', 'Winter', 'Autumn'] }
+                    ];
+                    const chosenSet = categorySets[getRandomInt(0, categorySets.length - 1)];
+
                     const data = [
-                        { label: 'Cats', percent: chosenPercents[0], color: '#60a5fa' },
-                        { label: 'Dogs', percent: chosenPercents[1], color: '#4ade80' },
-                        { label: 'Fish', percent: chosenPercents[2], color: '#fb923c' }
+                        { label: chosenSet.labels[0], percent: chosenPercents[0], color: '#60a5fa' },
+                        { label: chosenSet.labels[1], percent: chosenPercents[1], color: '#4ade80' },
+                        { label: chosenSet.labels[2], percent: chosenPercents[2], color: '#fb923c' }
                     ];
 
                     data.forEach(item => { item.count = (item.percent / 100) * total; });
@@ -255,17 +262,24 @@
                     const svg = `<svg viewBox="0 0 200 120" class="mx-auto mt-4">${paths}${legend}</svg>`;
                     
                     return {
-                        question: `A survey of <strong>${total}</strong> students asked for their favourite pet. Based on the chart, how many students chose ${targetItem.label.toLowerCase()}?`,
+                        question: `A survey of <strong>${total}</strong> students asked for their favourite ${chosenSet.context}. Based on the chart, how many students chose ${targetItem.label.toLowerCase()}?`,
                         svg: svg,
                         answer: targetItem.count
                     };
                 },
                 () => {
+                    const categorySets = [
+                        { context: 'sports', labels: ['Soccer', 'Rugby', 'Tennis', 'Cricket'] },
+                        { context: 'fruits', labels: ['Apple', 'Banana', 'Orange', 'Grapes'] },
+                        { context: 'flavours', labels: ['Choc', 'Vanilla', 'Mint', 'Berry'] }
+                    ];
+                    const chosenSet = categorySets[getRandomInt(0, categorySets.length - 1)];
+
                     const data = [
-                        { label: 'Soccer', count: getRandomInt(5, 20) },
-                        { label: 'Rugby', count: getRandomInt(5, 20) },
-                        { label: 'Tennis', count: getRandomInt(5, 20) },
-                        { label: 'Cricket', count: getRandomInt(5, 20) },
+                        { label: chosenSet.labels[0], count: getRandomInt(5, 20) },
+                        { label: chosenSet.labels[1], count: getRandomInt(5, 20) },
+                        { label: chosenSet.labels[2], count: getRandomInt(5, 20) },
+                        { label: chosenSet.labels[3], count: getRandomInt(5, 20) },
                     ];
                     
                     // Sort to easily find min/max, and adjust to avoid ties
@@ -303,7 +317,7 @@
                     const svg = `<svg viewBox="0 0 200 120" class="mx-auto mt-4">${bars}</svg>`;
                     
                     return {
-                        question: `The bar chart shows the favourite sports of a group of students. ${chosenQuestion.question}`,
+                        question: `The bar chart shows the favourite ${chosenSet.context} of a group of students. ${chosenQuestion.question}`,
                         svg: svg,
                         answer: chosenQuestion.answer
                     };
@@ -378,21 +392,67 @@
                     }
                 },
                 () => {
-                    return {
-                        question: `True or False: If 2 ice creams are the same price as 3 chocolate bars, then a chocolate bar costs less than an ice cream.`,
-                        answer: 'True'
-                    };
+                    const scenarios = [
+                        {
+                            question: `True or False: If 2 ice creams are the same price as 3 chocolate bars, then a chocolate bar costs less than an ice cream.`,
+                            answer: 'True'
+                        },
+                        {
+                            question: `True or False: If a cheetah can run twice as fast as a rabbit, then a rabbit is slower than a cheetah.`,
+                            answer: 'True'
+                        },
+                        {
+                            question: `True or False: If 4 apples weigh the same as 1 pineapple, then an apple is lighter than a pineapple.`,
+                            answer: 'True'
+                        }
+                    ];
+                    return scenarios[getRandomInt(0, scenarios.length - 1)];
                 },
                 () => {
-                    const ratio1 = 2;
-                    const ratio2 = 5;
-                    const multiplier = getRandomInt(3, 7);
-                    const num1 = ratio1 * multiplier;
-                    const num2 = ratio2 * multiplier;
-                    return {
-                        question: `Jamal is making a necklace. He uses ${ratio1} spotty beads for every ${ratio2} stripey beads. If he uses <strong>${num1} spotty beads</strong>, how many stripey beads will he need?`,
-                        answer: `${num2} stripey beads`
-                    }
+                    const scenarios = [
+                        {
+                            generate: () => {
+                                const ratio1 = 2;
+                                const ratio2 = 5;
+                                const multiplier = getRandomInt(3, 7);
+                                const num1 = ratio1 * multiplier;
+                                const num2 = ratio2 * multiplier;
+                                return {
+                                    question: `Jamal is making a necklace. He uses ${ratio1} spotty beads for every ${ratio2} stripey beads. If he uses <strong>${num1} spotty beads</strong>, how many stripey beads will he need?`,
+                                    answer: `${num2} stripey beads`
+                                };
+                            }
+                        },
+                        {
+                            generate: () => {
+                                const ratio1 = 5;
+                                const ratio2 = 2;
+                                const multiplier = getRandomInt(3, 7);
+                                const num1 = ratio1 * multiplier;
+                                const num2 = ratio2 * multiplier;
+                                return {
+                                    question: `Sofia is building a Lego tower. She uses ${ratio1} square blocks for every ${ratio2} rectangle blocks. If she has <strong>${num1} square blocks</strong>, how many rectangle blocks does she use?`,
+                                    answer: `${num2} rectangle blocks`
+                                };
+                            }
+                        },
+                        {
+                            generate: () => {
+                                const ratio1 = 3;
+                                const ratio2 = 2;
+                                const multiplier = getRandomInt(3, 7);
+                                const num1 = ratio1 * multiplier;
+                                const num2 = ratio2 * multiplier;
+                                return {
+                                    question: `Amira is making fruit kebabs. She puts ${ratio1} strawberries for every ${ratio2} pieces of banana. If she uses <strong>${num1} strawberries</strong>, how many pieces of banana will she need?`,
+                                    answer: `${num2} pieces of banana`
+                                };
+                            }
+                        }
+                    ];
+                    
+                    const chosenScenario = scenarios[getRandomInt(0, scenarios.length - 1)];
+                    return chosenScenario.generate();
                 },
                 () => {
                     const num1 = getRandomInt(800, 950);
@@ -571,4 +631,6 @@
 
 </body>
 </html>
+
+
 
