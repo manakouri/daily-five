@@ -201,22 +201,16 @@
                     }
                 },
                  () => {
-                    const start = getRandomInt(1, 3);
-                    const multiplier = getRandomInt(2, 4);
-                    // Extend the sequence to make the pattern clearer
-                    const sequence = [start, start * multiplier, start * multiplier * multiplier, start * multiplier * multiplier * multiplier];
-                    const outlierIndex = getRandomInt(1, 2); // Corrupt the 2nd or 3rd term
-                    const originalValue = sequence[outlierIndex];
-                    let outlier;
-                    do {
-                        outlier = originalValue + getRandomInt(1, 5) * (getRandomInt(0, 1) ? 1 : -1);
-                    } while (sequence.includes(outlier) || outlier <= 0);
-
-                    sequence[outlierIndex] = outlier;
+                    const start = getRandomInt(1, 10);
+                    const step = getRandomInt(2, 9);
+                    const sequence = [start, start + step, start + step * 2, start + step * 3, start + step * 4];
+                    const missingIndex = getRandomInt(1, 3);
+                    const answer = sequence[missingIndex];
+                    sequence[missingIndex] = '___';
                     
                     return {
-                        question: `There is a mistake in this pattern. Which number is incorrect? <strong>${sequence.join(', ')}</strong>`,
-                        answer: outlier
+                        question: `Find the missing number in the pattern: <strong>${sequence.join(', ')}</strong>`,
+                        answer: answer
                     };
                 }
             ],
@@ -370,7 +364,7 @@
                     ];
                     
                     const scenario = scenarios[getRandomInt(0, scenarios.length - 1)];
-                    const itemsPerUnit = getRandomInt(6, 25);
+                    const itemsPerUnit = getRandomInt(2, 9);
                     const totalItems = itemsPerUnit * getRandomInt(5, 15);
 
                     return {
@@ -615,5 +609,6 @@
 
 </body>
 </html>
+
 
 
