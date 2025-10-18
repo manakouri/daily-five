@@ -33,7 +33,7 @@
             </header>
 
             <!-- Questions Grid -->
-            <div id="questions-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 sm:gap-6">
+            <div id="questions-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                 <!-- Question boxes will be inserted here by JavaScript -->
             </div>
             
@@ -328,12 +328,32 @@
                 }
             ],
             numberStrategies: [
-                 () => {
-                    const stripsPerWhetu = [4, 5, 6][getRandomInt(0, 2)];
-                    const totalStrips = stripsPerWhetu * getRandomInt(12, 25);
+                () => {
+                    const scenarios = [
+                        {
+                            setup: (count) => `One whetū (star) is made from ${count} strips of harakeke (flax).`,
+                            query: (total) => `How many whetū will <strong>${total}</strong> strips of harakeke make?`,
+                            answerUnit: 'whetū'
+                        },
+                        {
+                            setup: (count) => `One bag can hold ${count} jellybeans.`,
+                            query: (total) => `How many bags will <strong>${total}</strong> jellybeans fill?`,
+                            answerUnit: 'bags'
+                        },
+                        {
+                            setup: (count) => `One shelf can hold ${count} boxes of Weet-Bix.`,
+                            query: (total) => `How many shelves will <strong>${total}</strong> boxes of Weet-Bix fill?`,
+                            answerUnit: 'shelves'
+                        }
+                    ];
+                    
+                    const scenario = scenarios[getRandomInt(0, scenarios.length - 1)];
+                    const itemsPerUnit = getRandomInt(6, 25);
+                    const totalItems = itemsPerUnit * getRandomInt(5, 15);
+
                     return {
-                        question: `One whetū (star) is made from ${stripsPerWhetu} strips of harakeke (flax). How many whetū will <strong>${totalStrips}</strong> strips of harakeke make?`,
-                        answer: `${totalStrips / stripsPerWhetu} whetū`
+                        question: `${scenario.setup(itemsPerUnit)} ${scenario.query(totalItems)}`,
+                        answer: `${totalItems / itemsPerUnit} ${scenario.answerUnit}`
                     };
                 },
                  () => {
