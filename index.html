@@ -579,6 +579,73 @@
                         svg: svg,
                         answer: `${width * height} ${unitSymbol}²`
                     };
+                },
+                () => {
+                    // --- REBUILT Transformation Question Generator ---
+                    const baseShape = [[1, 1], [1, 3], [3, 3], [3, 2], [2, 2], [2, 1]];
+                    const transformType = getRandomInt(0, 1) === 0 ? 'rotate' : 'reflect';
+
+                    const toPath = (points, color, opacity = 1) => {
+                        const pathString = points.map(p => `${p[0] * 10},${-p[1] * 10}`).join(' ');
+                        return `<polygon points="${pathString}" fill="${color}" stroke="#4b5563" stroke-width="0.5" opacity="${opacity}" />`;
+                    };
+
+                    let questionText = '';
+                    let questionSvg = '';
+                    let answerSvg = '';
+                    
+                    if (transformType === 'rotate') {
+                        const angle = [90, 180, 270][getRandomInt(0, 2)];
+                        const direction = getRandomInt(0, 1) === 0 ? 'clockwise' : 'anti-clockwise';
+                        questionText = `Rotate the shape <strong>${angle}° ${direction}</strong> around the origin (0,0).`;
+
+                        const sign = direction === 'clockwise' ? -1 : 1;
+                        const rad = angle * sign * Math.PI / 180;
+                        
+                        const finalShape = baseShape.map(([x, y]) => {
+                            const newX = Math.round(x * Math.cos(rad) - y * Math.sin(rad));
+                            const newY = Math.round(x * Math.sin(rad) + y * Math.cos(rad));
+                            return [newX, newY];
+                        });
+
+                        const gridLines = `
+                            <path d="M -50,0 L 50,0" stroke="#d1d5db" stroke-width="0.5"/>
+                            <path d="M 0,-50 L 0,50" stroke="#d1d5db" stroke-width="0.5"/>
+                            <text x="52" y="3" font-size="6" fill="gray">x</text>
+                            <text x="2" y="-52" font-size="6" fill="gray">y</text>`;
+                        
+                        questionSvg = `<svg viewBox="-55 -55 110 110" class="mx-auto">${gridLines}${toPath(baseShape, '#a3a3a3')}</svg>`;
+                        answerSvg = `<svg viewBox="-55 -55 110 110" class="mx-auto">${gridLines}${toPath(baseShape, '#d4d4d4', 0.7)}${toPath(finalShape, '#60a5fa')}</svg>`;
+
+                    } else { // Reflect
+                        const axis = getRandomInt(0, 1) === 0 ? 'x' : 'y';
+                        questionText = `Reflect the shape across the dotted line.`;
+                        
+                        const finalShape = (axis === 'x')
+                            ? baseShape.map(([x, y]) => [x, -y-1]) // Offset for visual clarity from line
+                            : baseShape.map(([x, y]) => [-x-1, y]); // Offset for visual clarity from line
+                        
+                        const offsetBaseShape = (axis === 'x')
+                            ? baseShape.map(([x,y]) => [x, y+1]) // Move away from line
+                            : baseShape.map(([x,y]) => [x+1, y]); // Move away from line
+
+
+                        let reflectionLine;
+                        if (axis === 'x') {
+                            reflectionLine = `<path d="M -50,0 L 50,0" stroke="#a3a3a3" stroke-width="1" stroke-dasharray="4 4"/>`;
+                        } else {
+                            reflectionLine = `<path d="M 0,-50 L 0,50" stroke="#a3a3a3" stroke-width="1" stroke-dasharray="4 4"/>`;
+                        }
+                        
+                        questionSvg = `<svg viewBox="-55 -55 110 110" class="mx-auto">${reflectionLine}${toPath(offsetBaseShape, '#a3a3a3')}</svg>`;
+                        answerSvg = `<svg viewBox="-55 -55 110 110" class="mx-auto">${reflectionLine}${toPath(offsetBaseShape, '#d4d4d4', 0.7)}${toPath(finalShape, '#60a5fa')}</svg>`;
+                    }
+
+                    return {
+                        question: questionText,
+                        svg: questionSvg,
+                        answer: answerSvg 
+                    };
                 }
             ]
         };
@@ -650,5 +717,8 @@
 
 </body>
 </html>
+
+
+
 
 
