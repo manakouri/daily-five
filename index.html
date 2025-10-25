@@ -107,15 +107,15 @@
                 },
                  () => {
                     const scenarios = [
-                        { item: 'cake', pieces: 8, question: 'A cake was cut into quarters and then each quarter was cut in half.' },
-                        { item: 'pizza', pieces: 8, question: 'A pizza was cut into quarters and then each quarter was cut in half.' },
-                        { item: 'cake', pieces: 6, question: 'A cake was cut in half, and then each half was cut into thirds.' },
-                        { item: 'pizza', pieces: 6, question: 'A pizza was cut in half, and then each half was cut into thirds.' }
+                        { item: 'cake', pieces: 8, question: 'A cake was cut into quarters and then each quarter was cut in half.'},
+                        { item: 'pizza', pieces: 8, question: 'A pizza was cut into quarters and then each quarter was cut in half.'},
+                        { item: 'cake', pieces: 6, question: 'A cake was cut in half and then each half was cut into thirds.'},
+                        { item: 'pizza', pieces: 6, question: 'A pizza was cut in half and then each half was cut into thirds.'},
                     ];
-                    const chosen = scenarios[getRandomInt(0, scenarios.length-1)];
+                    const scenario = scenarios[getRandomInt(0, scenarios.length - 1)];
                     return {
-                        question: `${chosen.question} How many pieces of ${chosen.item} were there?`,
-                        answer: `${chosen.pieces} pieces`
+                        question: `${scenario.question} How many pieces were there?`,
+                        answer: `${scenario.pieces} pieces`
                     }
                 },
                 () => {
@@ -131,7 +131,7 @@
                         question: `How many $10 notes are in <strong>$${tens * 10}</strong>?`,
                         answer: `${tens}`
                     }
-                }
+                },
             ],
             algebra: [
                 () => {
@@ -155,15 +155,36 @@
                     }
                 },
                 () => {
-                    const a = getRandomInt(2, 9);
-                    const b = getRandomInt(10, 25);
-                    const sum = a + b;
-                    const operators = ['+', '-', '&times;', '&div;'];
-                    const correctAnswer = '-';
-                    return {
-                        question: `If <strong>${a} + ${b} = ${sum}</strong>, then which symbol goes in the box? <br><strong>${sum} = ${b} [ &#9633; ] ${a}</strong> <br>(${operators.join(', ')})`,
-                        answer: correctAnswer
-                    };
+                    const scenarios = [
+                        () => { // Commutative property of addition
+                            const a = getRandomInt(2, 9);
+                            const b = getRandomInt(10, 25);
+                            const sum = a + b;
+                            return {
+                                question: `If <strong>${a} + ${b} = ${sum}</strong>, then which symbol goes in the box? <br><strong>${sum} = ${b} [ &#9633; ] ${a}</strong> <br>(+, -, &times;, &div;)`,
+                                answer: '+'
+                            };
+                        },
+                        () => { // Inverse of addition (subtraction)
+                            const a = getRandomInt(2, 9);
+                            const b = getRandomInt(10, 25);
+                            const sum = a + b;
+                             return {
+                                question: `If <strong>${a} + ${b} = ${sum}</strong>, then which symbol goes in the box? <br><strong>${a} = ${sum} [ &#9633; ] ${b}</strong> <br>(+, -, &times;, &div;)`,
+                                answer: '-'
+                            };
+                        },
+                        () => { // Inverse of multiplication (division)
+                             const a = getRandomInt(2, 9);
+                             const b = getRandomInt(2, 9);
+                             const product = a * b;
+                             return {
+                                question: `If <strong>${a} &times; ${b} = ${product}</strong>, then which symbol goes in the box? <br><strong>${b} = ${product} [ &#9633; ] ${a}</strong> <br>(+, -, &times;, &div;)`,
+                                answer: '&div;'
+                            };
+                        }
+                    ];
+                    return scenarios[getRandomInt(0, scenarios.length - 1)]();
                 },
                 () => {
                     const unknown = getRandomInt(2, 6);
@@ -182,29 +203,25 @@
                         answer: sum - addend1
                     }
                 },
-                 () => {
+                () => {
                     const start = getRandomInt(1, 10);
-                    const step = getRandomInt(2, 9);
-                    const sequence = [start, start + step, start + step * 2, start + step * 3, start + step * 4];
-                    const missingIndex = getRandomInt(1, 3);
-                    const answer = sequence[missingIndex];
-                    sequence[missingIndex] = '___';
-                    
+                    const step = getRandomInt(2, 6);
+                    const sequence = [start, start + step, '&#9633;', start + step * 3, start + step * 4];
                     return {
                         question: `Find the missing number in the pattern: <strong>${sequence.join(', ')}</strong>`,
-                        answer: answer
+                        answer: start + step * 2
                     };
                 }
             ],
             statistics: [
                 () => {
-                    const contextSets = [
-                        { context: 'pet', plural: 'pets', labels: ['Cats', 'Dogs', 'Fish'] },
-                        { context: 'subject', plural: 'subjects', labels: ['Math', 'Art', 'P.E.'] },
-                        { context: 'season', plural: 'seasons', labels: ['Summer', 'Winter', 'Autumn'] }
+                    const scenarios = [
+                        { title: 'favourite pet', items: ['Cats', 'Dogs', 'Fish'] },
+                        { title: 'favourite school subject', items: ['Math', 'Art', 'P.E.'] },
+                        { title: 'favourite season', items: ['Summer', 'Winter', 'Autumn'] },
                     ];
+                    const scenario = scenarios[getRandomInt(0, scenarios.length - 1)];
 
-                    const chosenSet = contextSets[getRandomInt(0, contextSets.length - 1)];
                     const total = [40, 50, 60, 80, 100][getRandomInt(0, 4)];
                     const percentCombinations = [
                         [10, 20, 70], [10, 30, 60], [10, 40, 50],
@@ -215,9 +232,9 @@
                     const chosenPercents = shuffleArray(percentCombinations[getRandomInt(0, percentCombinations.length - 1)]);
 
                     const data = [
-                        { label: chosenSet.labels[0], percent: chosenPercents[0], color: '#60a5fa' },
-                        { label: chosenSet.labels[1], percent: chosenPercents[1], color: '#4ade80' },
-                        { label: chosenSet.labels[2], percent: chosenPercents[2], color: '#fb923c' }
+                        { label: scenario.items[0], percent: chosenPercents[0], color: '#60a5fa' },
+                        { label: scenario.items[1], percent: chosenPercents[1], color: '#4ade80' },
+                        { label: scenario.items[2], percent: chosenPercents[2], color: '#fb923c' }
                     ];
 
                     data.forEach(item => { item.count = (item.percent / 100) * total; });
@@ -246,33 +263,29 @@
                     const svg = `<svg viewBox="0 0 220 120" class="mx-auto mt-4">${paths}${legend}</svg>`;
                     
                     return {
-                        question: `A survey of <strong>${total}</strong> students asked for their favourite ${chosenSet.context}. Based on the chart, how many students chose ${targetItem.label}?`,
+                        question: `A survey of <strong>${total}</strong> students asked for their ${scenario.title}. Based on the chart, how many students chose ${targetItem.label}?`,
                         svg: svg,
                         answer: targetItem.count
                     };
                 },
                 () => {
-                     const contextSets = [
-                        { context: 'sport', labels: ['Soccer', 'Rugby', 'Tennis', 'Cricket'] },
-                        { context: 'fruit', labels: ['Apple', 'Banana', 'Orange', 'Pear'] },
-                        { context: 'flavour', labels: ['Choc', 'Mint', 'Vanilla', 'Berry'] }
+                    const scenarios = [
+                        { title: 'sports', items: ['Soccer', 'Rugby', 'Tennis', 'Cricket'] },
+                        { title: 'fruits', items: ['Apple', 'Banana', 'Orange', 'Pear'] },
+                        { title: 'ice cream flavours', items: ['Mint', 'Vanilla', 'Berry', 'Choc'] },
                     ];
-                    const chosenSet = contextSets[getRandomInt(0, contextSets.length - 1)];
-
+                    const scenario = scenarios[getRandomInt(0, scenarios.length - 1)];
+                    
                     const data = [
-                        { label: chosenSet.labels[0], count: getRandomInt(5, 20) },
-                        { label: chosenSet.labels[1], count: getRandomInt(5, 20) },
-                        { label: chosenSet.labels[2], count: getRandomInt(5, 20) },
-                        { label: chosenSet.labels[3], count: getRandomInt(5, 20) },
+                        { label: scenario.items[0], count: getRandomInt(5, 20) },
+                        { label: scenario.items[1], count: getRandomInt(5, 20) },
+                        { label: scenario.items[2], count: getRandomInt(5, 20) },
+                        { label: scenario.items[3], count: getRandomInt(5, 20) },
                     ];
                     
                     data.sort((a,b) => a.count - b.count);
-                    if (data[0].count === data[1].count) {
-                        data[0].count = Math.max(1, data[0].count - 1);
-                    }
-                     if (data[3].count === data[2].count) {
-                        data[3].count += 1;
-                    }
+                    if (data[0].count === data[1].count) data[0].count = Math.max(1, data[0].count - 1);
+                    if (data[3].count === data[2].count) data[3].count += 1;
                     data.sort((a,b) => a.count - b.count);
 
                     const maxVal = data[3].count;
@@ -282,8 +295,8 @@
 
                     const questionTypes = [
                         { question: `How many students were surveyed in total?`, answer: totalStudents },
-                        { question: `Which ${chosenSet.context} was the most popular?`, answer: mostPopular },
-                        { question: `Which ${chosenSet.context} was the least popular?`, answer: leastPopular }
+                        { question: `Which ${scenario.title.slice(0,-1)} was the most popular?`, answer: mostPopular },
+                        { question: `Which ${scenario.title.slice(0,-1)} was the least popular?`, answer: leastPopular }
                     ];
                     
                     const chosenQuestion = questionTypes[getRandomInt(0, questionTypes.length - 1)];
@@ -299,42 +312,43 @@
                     const svg = `<svg viewBox="0 0 200 120" class="mx-auto mt-4">${bars}</svg>`;
                     
                     return {
-                        question: `The bar chart shows the favourite ${chosenSet.context}s of a group of students. ${chosenQuestion.question}`,
+                        question: `The bar chart shows the favourite ${scenario.title} of a group of students. ${chosenQuestion.question}`,
                         svg: svg,
                         answer: chosenQuestion.answer
                     };
                 },
                  () => {
-                    const contextSets = [
-                        {
-                            context: 'players', item: 'goals',
-                            names: ['Sam', 'Jen', 'Mo', 'Li'],
-                        },
-                        {
-                            context: 'students', item: 'books',
-                            names: ['Aya', 'Ben', 'Chloe', 'Dan'],
-                        }
+                    const scenarios = [
+                        { subject: 'players', item: 'goals', verb: 'scored' },
+                        { subject: 'students', item: 'books', verb: 'read' }
                     ];
-                    const chosenSet = contextSets[getRandomInt(0, contextSets.length - 1)];
+                    const scenario = scenarios[getRandomInt(0, scenarios.length - 1)];
 
                     const data = [
-                        {name: chosenSet.names[0], count: getRandomInt(3, 8)}, {name: chosenSet.names[1], count: getRandomInt(3, 8)},
-                        {name: chosenSet.names[2], count: getRandomInt(3, 8)}, {name: chosenSet.names[3], count: getRandomInt(3, 8)},
+                        {name: 'Sam', count: getRandomInt(3, 8)}, {name: 'Jen', count: getRandomInt(3, 8)},
+                        {name: 'Mo', count: getRandomInt(3, 8)}, {name: 'Li', count: getRandomInt(3, 8)},
                     ].sort((a,b) => a.count - b.count);
 
                     const threshold = data[getRandomInt(1,2)].count;
-                    const comparison = getRandomInt(0,1) === 0 ? 'fewer' : 'more';
-                    const playersCompared = comparison === 'fewer' 
-                        ? data.filter(p => p.count < threshold).length 
-                        : data.filter(p => p.count > threshold).length;
                     
-                    let table = `<table class="w-full text-center mt-4 border-collapse"><thead><tr><th class="border p-2">${chosenSet.context.slice(0, -1)}</th><th class="border p-2">${chosenSet.item}</th></tr></thead><tbody>`;
+                    const questionType = getRandomInt(0, 1); // 0 for fewer, 1 for more
+                    let questionText, answerCount;
+
+                    if (questionType === 0) {
+                        questionText = `fewer than <strong>${threshold} ${scenario.item}</strong>`;
+                        answerCount = data.filter(p => p.count < threshold).length;
+                    } else {
+                        questionText = `more than <strong>${threshold} ${scenario.item}</strong>`;
+                        answerCount = data.filter(p => p.count > threshold).length;
+                    }
+
+                    let table = `<table class="w-full text-center mt-4 border-collapse"><thead><tr><th class="border p-2">${scenario.subject.slice(0,-1)}</th><th class="border p-2">${scenario.item}</th></tr></thead><tbody>`;
                     data.forEach(p => { table += `<tr><td class="border p-2">${p.name}</td><td class="border p-2">${p.count}</td></tr>`; });
                     table += `</tbody></table>`;
                     
                     return {
-                        question: `Using the frequency table, how many ${chosenSet.context} scored ${comparison} than <strong>${threshold} ${chosenSet.item}</strong>? ${table}`,
-                        answer: playersCompared
+                        question: `Using the frequency table, how many ${scenario.subject} ${scenario.verb} ${questionText}? ${table}`,
+                        answer: answerCount
                     };
                 }
             ],
@@ -371,16 +385,17 @@
                     const coveredRows = getRandomInt(3, 8);
                     const coveredCols = getRandomInt(3, 8);
                     const coveredCount = coveredRows * coveredCols;
+                    const spacing = 12;
                     
                     let beads = '';
                     for (let r = 0; r < 10; r++) {
                         for (let c = 0; c < 10; c++) {
                             const isCovered = r < coveredRows && c < coveredCols;
-                            beads += `<circle cx="${10 + c * 10}" cy="${10 + r * 10}" r="4" fill="${isCovered ? '#a1a1aa' : '#ef4444'}" />`;
+                            beads += `<circle cx="${10 + c * spacing}" cy="${10 + r * spacing}" r="4" fill="${isCovered ? '#a1a1aa' : 'black'}" />`;
                         }
                     }
-                    const cover = `<rect x="4" y="4" width="${coveredCols * 10}" height="${coveredRows * 10}" fill="#d4d4d8" stroke="#71717a" stroke-width="1" />`;
-                    const svg = `<svg viewBox="0 0 110 110" class="mx-auto mt-4">${beads}${cover}</svg>`;
+                    const cover = `<rect x="4" y="4" width="${coveredCols * spacing}" height="${coveredRows * spacing}" fill="#d4d4d8" stroke="#71717a" stroke-width="1" />`;
+                    const svg = `<svg viewBox="0 0 ${10*spacing + 10} ${10*spacing + 10}" class="mx-auto mt-4">${beads}${cover}</svg>`;
 
                     return {
                         question: `There are 100 beads on the frame. How many have been covered up?`,
@@ -388,86 +403,54 @@
                         answer: `${coveredCount} beads`
                     }
                 },
-                () => {
-                    const generators = [
-                        // Generator 1: Price comparison
-                        () => {
-                            const items = [
-                                { singular: 'ice cream', plural: 'ice creams' }, { singular: 'chocolate bar', plural: 'chocolate bars' },
-                                { singular: 'notebook', plural: 'notebooks' }, { singular: 'pen', plural: 'pens' },
-                                { singular: 'pizza', plural: 'pizzas' }, { singular: 'burger', plural: 'burgers' }
-                            ];
-                            
-                            const i = getRandomInt(0, items.length / 2 - 1) * 2;
-                            const itemA = items[i];
-                            const itemB = items[i+1];
-
-                            const num1 = getRandomInt(2, 4);
-                            const num2 = getRandomInt(num1 + 1, 6);
-
-                            // Setup: "If num1 itemA cost the same as num2 itemB..."
-                            // Since num2 > num1, itemB is the cheaper one.
-                            const expensiveItem = { name: itemA, count: num1 };
-                            const cheapItem = { name: itemB, count: num2 };
-
-                            const askAboutCheap = getRandomInt(0, 1) === 0;
-                            const askIfLess = getRandomInt(0, 1) === 0;
-                            const comparisonWord = askIfLess ? 'less' : 'more';
-
-                            let questionItem, comparisonItem, answer;
-
-                            if (askAboutCheap) {
-                                questionItem = cheapItem.name;
-                                comparisonItem = expensiveItem.name;
-                                // Asking about the cheap item. Is it less? True. Is it more? False.
-                                answer = askIfLess ? 'True' : 'False';
-                            } else { // ask about expensive
-                                questionItem = expensiveItem.name;
-                                comparisonItem = cheapItem.name;
-                                // Asking about the expensive item. Is it less? False. Is it more? True.
-                                answer = askIfLess ? 'False' : 'True';
-                            }
-                            const questionText = `If <strong>${expensiveItem.count} ${expensiveItem.name.plural}</strong> are the same price as <strong>${cheapItem.count} ${cheapItem.name.plural}</strong>, then a ${questionItem.singular} costs ${comparisonWord} than a ${comparisonItem.singular}.`;
-                            return { question: `True or False: ${questionText}`, answer: answer };
-                        },
-                        // Generator 2: Speed comparison
-                        () => ({
-                            question: 'True or False: If a cheetah can run faster than a lion, and a lion can run faster than a dog, then a dog can run faster than a cheetah.',
-                            answer: 'False'
-                        }),
-                        // Generator 3: Weight comparison
-                        () => ({
-                            question: 'True or False: If a watermelon weighs more than a pineapple, and a pineapple weighs more than an apple, then a watermelon weighs more than an apple.',
-                            answer: 'True'
-                        })
+                 () => {
+                    const scenarios = [
+                        { item1: 'ice cream', item2: 'chocolate bar', plural1: 'ice creams', plural2: 'chocolate bars'},
+                        { item1: 'notebook', item2: 'pen', plural1: 'notebooks', plural2: 'pens'},
+                        { item1: 'apple', item2: 'banana', plural1: 'apples', plural2: 'bananas'},
                     ];
+                    const scenario = scenarios[getRandomInt(0, scenarios.length - 1)];
+                    let num1, num2;
+                    do {
+                        num1 = getRandomInt(2, 5);
+                        num2 = getRandomInt(2, 5);
+                    } while (num1 === num2);
 
-                    // Choose one of the generators and run it.
-                    const chosenGenerator = generators[getRandomInt(0, generators.length - 1)];
-                    return chosenGenerator();
+                    const isMoreExpensive = num1 < num2;
+                    const comparison = getRandomInt(0,1) === 0 ? 'less than' : 'more than';
+                    let correctAnswer;
+                    
+                    if(comparison === 'less than'){
+                        correctAnswer = !isMoreExpensive;
+                    } else { // more than
+                        correctAnswer = isMoreExpensive;
+                    }
+
+                    return {
+                        question: `True or False: If ${num1} ${scenario.plural1} are the same price as ${num2} ${scenario.plural2}, then one ${scenario.item1} costs <strong>${comparison}</strong> one ${scenario.item2}.`,
+                        answer: correctAnswer ? 'True' : 'False'
+                    };
                 },
                 () => {
-                    const scenarios = [
-                        {
-                            name: 'Jamal', item1: 'spotty beads', item2: 'stripey beads', action: 'making a necklace',
-                            ratio1: 2, ratio2: 5
-                        },
-                        {
-                            name: 'Sofia', item1: 'square blocks', item2: 'rectangle blocks', action: 'building a Lego tower',
-                            ratio1: 5, ratio2: 2
-                        },
-                        {
-                            name: 'Amira', item1: 'strawberries', item2: 'pieces of banana', action: 'making fruit kebabs',
-                            ratio1: 3, ratio2: 2
-                        }
+                     const scenarios = [
+                        { subject: 'Jamal', verb: 'making a necklace', item1: 'spotty beads', item2: 'stripey beads'},
+                        { subject: 'Sofia', verb: 'building a Lego tower', item1: 'square blocks', item2: 'rectangle blocks'},
+                        { subject: 'Amira', verb: 'making fruit kebabs', item1: 'strawberries', item2: 'pieces of banana'},
                     ];
-                    const chosen = scenarios[getRandomInt(0, scenarios.length-1)];
+                    const scenario = scenarios[getRandomInt(0, scenarios.length - 1)];
+
+                    const ratio1 = getRandomInt(2, 4);
+                    let ratio2;
+                    do {
+                        ratio2 = getRandomInt(3, 7);
+                    } while (ratio1 === ratio2);
+                    
                     const multiplier = getRandomInt(3, 7);
-                    const num1 = chosen.ratio1 * multiplier;
-                    const num2 = chosen.ratio2 * multiplier;
+                    const num1 = ratio1 * multiplier;
+                    const num2 = ratio2 * multiplier;
                     return {
-                        question: `${chosen.name} is ${chosen.action}. She uses ${chosen.ratio1} ${chosen.item1} for every ${chosen.ratio2} ${chosen.item2}. If she uses <strong>${num1} ${chosen.item1}</strong>, how many ${chosen.item2} will she need?`,
-                        answer: `${num2} ${chosen.item2}`
+                        question: `${scenario.subject} is ${scenario.verb}. They use ${ratio1} ${scenario.item1} for every ${ratio2} ${scenario.item2}. If they use <strong>${num1} ${scenario.item1}</strong>, how many ${scenario.item2} will they need?`,
+                        answer: `${num2} ${scenario.item2}`
                     }
                 },
                 () => {
@@ -519,18 +502,38 @@
                     }
                 },
                  () => {
-                    const length = (getRandomInt(1, 8) + getRandomInt(0,1) * 0.5 + 2).toFixed(1);
-                    const scaleFactor = 20;
+                    // Horizontal Ruler
+                    const scaleFactor = 20; // Pixels per cm
+                    const increments = [0.1, 0.2, 0.5];
+                    const increment = increments[getRandomInt(0, increments.length - 1)];
+                    const numIncrements = 1 / increment;
+                    
+                    let length;
+                    if (increment === 0.1) length = (getRandomInt(2, 9) + getRandomInt(1, 9) / 10).toFixed(1);
+                    else if (increment === 0.2) length = (getRandomInt(2, 9) + getRandomInt(1, 4) * 0.2).toFixed(1);
+                    else length = (getRandomInt(2, 9) + 0.5).toFixed(1);
+                    
                     let markings = '';
-                    for(let i=0; i<=10; i++){
-                        markings += `<line x1="${10 + i * scaleFactor}" y1="40" x2="${10 + i * scaleFactor}" y2="${i%2===0 ? 30:35}" stroke="black" />`;
-                        if(i%2===0) markings += `<text x="${10 + i * scaleFactor}" y="25" text-anchor="middle" font-size="8">${i}</text>`;
+                    for(let i = 0; i <= 10; i++){
+                        // Main cm tick and number
+                        markings += `<line x1="${10 + i * scaleFactor}" y1="40" x2="${10 + i * scaleFactor}" y2="30" stroke="black" />`;
+                        markings += `<text x="${10 + i * scaleFactor}" y="25" text-anchor="middle" font-size="8">${i}</text>`;
+                        
+                        // Sub-cm ticks
+                        if (i < 10) {
+                            for(let j = 1; j < numIncrements; j++) {
+                                const x = 10 + i * scaleFactor + j * increment * scaleFactor;
+                                const tickHeight = (increment === 0.5 && j * increment === 0.5) ? 33 : 35; // Taller for 0.5
+                                markings += `<line x1="${x}" y1="40" x2="${x}" y2="${tickHeight}" stroke="black" />`;
+                            }
+                        }
                     }
-                    const svg = `<svg viewBox="0 0 235 60" class="mx-auto mt-4">
+
+                    const svg = `<svg viewBox="0 0 240 60" class="mx-auto mt-4">
                                     <rect x="10" y="45" width="${length * scaleFactor}" height="10" fill="#fca5a5" />
-                                    <line x1="10" y1="40" x2="210" y2="40" stroke="black" />
+                                    <line x1="10" y1="40" x2="${10 + 10 * scaleFactor}" y2="40" stroke="black" />
                                     ${markings}
-                                    <text x="220" y="40" font-size="8" dominant-baseline="middle">cm</text>
+                                    <text x="${20 + 10 * scaleFactor}" y="40" font-size="8" dominant-baseline="middle">cm</text>
                                 </svg>`;
 
                     return {
@@ -540,15 +543,30 @@
                     };
                 },
                 () => {
-                    const ml = getRandomInt(1,4) * 5 + 50;
+                    // Vertical Measuring Cup
+                    const increments = [1, 2, 5];
+                    const increment = increments[getRandomInt(0, increments.length - 1)];
+                    const numIncrements = 10 / increment;
+
+                    let ml;
+                    if (increment === 1) ml = getRandomInt(51, 99);
+                    else if (increment === 2) ml = 50 + getRandomInt(1, 24) * 2;
+                    else ml = 50 + getRandomInt(1, 9) * 5;
+
                     let markings = '';
-                    for(let i=0; i <= 100; i+=10) {
+                    for(let i = 0; i <= 100; i += 10) {
                         markings += `<line x1="45" y1="${120-i}" x2="55" y2="${120-i}" stroke="black" />`;
                         markings += `<text x="38" y="${124-i}" font-size="8" text-anchor="end">${i}</text>`;
                     }
-                     for(let i=5; i <= 95; i+=10) {
-                        markings += `<line x1="48" y1="${120-i}" x2="52" y2="${120-i}" stroke="black" />`;
+                    
+                    for(let i = 0; i < 100; i += 10) {
+                         for(let j = 1; j < numIncrements; j++) {
+                            const y = 120 - (i + j * increment);
+                            const tickWidth = (increment === 5 && j * increment === 5) ? 48 : 50; // Taller for 5ml
+                            markings += `<line x1="${tickWidth}" y1="${y}" x2="52" y2="${y}" stroke="black" />`;
+                         }
                     }
+                    
                     const svg = `<svg viewBox="0 0 100 140" class="mx-auto mt-4">
                                     <rect x="55" y="${120-ml}" width="20" height="${ml}" fill="#67e8f9"/>
                                     <path d="M 50 120 L 50 10 L 80 10 L 80 120" stroke="black" fill="none"/>
@@ -562,11 +580,12 @@
                     }
                 },
                 () => {
-                    const units = ['centimetres', 'metres'];
-                    const unit = units[getRandomInt(0,1)];
-                    const unitSymbol = unit === 'centimetres' ? 'cm' : 'm';
                     const width = getRandomInt(5, 8);
                     const height = getRandomInt(3, 5);
+                    const units = ['centimetres', 'metres'];
+                    const unit = units[getRandomInt(0, 1)];
+                    const unitAbbr = unit === 'centimetres' ? 'cm' : 'm';
+                    
                     let grid = '';
                     for (let i = 0; i < height; i++) {
                         for (let j = 0; j < width; j++) {
@@ -575,91 +594,89 @@
                     }
                     const svg = `<svg viewBox="-1 -1 ${width*20+2} ${height*20+2}" class="mx-auto mt-4">${grid}</svg>`;
                     return {
-                        question: `Each square in the grid is 1 square ${unit.slice(0,-1)}. What is the area of the shape?`,
+                        question: `Each square in the grid below is 1 square ${unit.slice(0,-1)}. What is the area of the shape?`,
                         svg: svg,
-                        answer: `${width * height} ${unitSymbol}²`
+                        answer: `${width * height} ${unitAbbr}²`
                     };
                 },
                 () => {
-                    // --- REBUILT Transformation Question Generator ---
-                    const baseShape = [[1, 1], [1, 3], [3, 3], [3, 2], [2, 2], [2, 1]];
-                    const transformType = getRandomInt(0, 1) === 0 ? 'rotate' : 'reflect';
-
-                    const toPath = (points, color, opacity = 1) => {
-                        const pathString = points.map(p => `${p[0] * 10},${-p[1] * 10}`).join(' ');
-                        return `<polygon points="${pathString}" fill="${color}" stroke="#4b5563" stroke-width="0.5" opacity="${opacity}" />`;
+                    // This function generates rotation or reflection questions.
+                    const size = 20; // Size of each grid square
+                    const viewBoxSize = 120;
+                    const center = viewBoxSize / 2;
+                    const shapePoints = "40,40 40,60 60,60 60,80 80,80 80,40"; // L-shape
+                    
+                    const drawGrid = () => {
+                        let lines = '';
+                        for (let i = 0; i <= viewBoxSize; i += size) {
+                            lines += `<line x1="${i}" y1="0" x2="${i}" y2="${viewBoxSize}" stroke="#e5e7eb" stroke-width="0.5"/>`;
+                            lines += `<line x1="0" y1="${i}" x2="${viewBoxSize}" y2="${i}" stroke="#e5e7eb" stroke-width="0.5"/>`;
+                        }
+                        return lines;
                     };
 
-                    let questionText = '';
-                    let questionSvg = '';
-                    let answerSvg = '';
-                    
-                    if (transformType === 'rotate') {
+                    const type = getRandomInt(0, 1); // 0 for reflection, 1 for rotation
+
+                    if (type === 0) { // Reflection
+                        const axis = getRandomInt(0, 1) === 0 ? 'y' : 'x'; // Reflect across y or x
+                        const line = `<line x1="${axis === 'y' ? center : 0}" y1="${axis === 'y' ? 0 : center}" x2="${axis === 'y' ? center : viewBoxSize}" y2="${axis === 'y' ? viewBoxSize : center}" stroke="black" stroke-width="1" stroke-dasharray="2 2"/>`;
+                        
+                        const qSvg = `<svg viewBox="0 0 ${viewBoxSize} ${viewBoxSize}" class="mx-auto mt-4">
+                                        ${drawGrid()}
+                                        <polygon points="${shapePoints}" fill="#93c5fd" />
+                                        ${line}
+                                      </svg>`;
+                        
+                        const transform = axis === 'y' ? `transform="scale(-1, 1) translate(-${viewBoxSize}, 0)"` : `transform="scale(1, -1) translate(0, -${viewBoxSize})"`;
+                        const aSvg = `<svg viewBox="0 0 ${viewBoxSize} ${viewBoxSize}" class="mx-auto mt-4">
+                                        ${drawGrid()}
+                                        <polygon points="${shapePoints}" fill="#d1d5db" />
+                                        <polygon points="${shapePoints}" fill="#3b82f6" ${transform} />
+                                        ${line}
+                                      </svg>`;
+                        
+                        return {
+                            question: `Reflect the shape across the dotted line.`,
+                            svg: qSvg,
+                            answerSvg: aSvg
+                        };
+
+                    } else { // Rotation
                         const angle = [90, 180, 270][getRandomInt(0, 2)];
                         const direction = getRandomInt(0, 1) === 0 ? 'clockwise' : 'anti-clockwise';
-                        questionText = `Rotate the shape <strong>${angle}° ${direction}</strong> around the origin (0,0).`;
-
-                        const sign = direction === 'clockwise' ? -1 : 1;
-                        const rad = angle * sign * Math.PI / 180;
+                        const rotationAngle = direction === 'clockwise' ? angle : -angle;
                         
-                        const finalShape = baseShape.map(([x, y]) => {
-                            const newX = Math.round(x * Math.cos(rad) - y * Math.sin(rad));
-                            const newY = Math.round(x * Math.sin(rad) + y * Math.cos(rad));
-                            return [newX, newY];
-                        });
+                        const qSvg = `<svg viewBox="0 0 ${viewBoxSize} ${viewBoxSize}" class="mx-auto mt-4">
+                                        ${drawGrid()}
+                                        <polygon points="${shapePoints}" fill="#93c5fd" />
+                                        <circle cx="${center}" cy="${center}" r="2" fill="red" />
+                                      </svg>`;
 
-                        const gridLines = `
-                            <path d="M -50,0 L 50,0" stroke="#d1d5db" stroke-width="0.5"/>
-                            <path d="M 0,-50 L 0,50" stroke="#d1d5db" stroke-width="0.5"/>
-                            <text x="52" y="3" font-size="6" fill="gray">x</text>
-                            <text x="2" y="-52" font-size="6" fill="gray">y</text>`;
-                        
-                        questionSvg = `<svg viewBox="-55 -55 110 110" class="mx-auto">${gridLines}${toPath(baseShape, '#a3a3a3')}</svg>`;
-                        answerSvg = `<svg viewBox="-55 -55 110 110" class="mx-auto">${gridLines}${toPath(baseShape, '#d4d4d4', 0.7)}${toPath(finalShape, '#60a5fa')}</svg>`;
+                        const aSvg = `<svg viewBox="0 0 ${viewBoxSize} ${viewBoxSize}" class="mx-auto mt-4">
+                                        ${drawGrid()}
+                                        <polygon points="${shapePoints}" fill="#d1d5db" />
+                                        <polygon points="${shapePoints}" fill="#3b82f6" transform="rotate(${rotationAngle}, ${center}, ${center})" />
+                                        <circle cx="${center}" cy="${center}" r="2" fill="red" />
+                                      </svg>`;
 
-                    } else { // Reflect
-                        const axis = getRandomInt(0, 1) === 0 ? 'x' : 'y';
-                        questionText = `Reflect the shape across the dotted line.`;
-                        
-                        const finalShape = (axis === 'x')
-                            ? baseShape.map(([x, y]) => [x, -y-1]) // Offset for visual clarity from line
-                            : baseShape.map(([x, y]) => [-x-1, y]); // Offset for visual clarity from line
-                        
-                        const offsetBaseShape = (axis === 'x')
-                            ? baseShape.map(([x,y]) => [x, y+1]) // Move away from line
-                            : baseShape.map(([x,y]) => [x+1, y]); // Move away from line
-
-
-                        let reflectionLine;
-                        if (axis === 'x') {
-                            reflectionLine = `<path d="M -50,0 L 50,0" stroke="#a3a3a3" stroke-width="1" stroke-dasharray="4 4"/>`;
-                        } else {
-                            reflectionLine = `<path d="M 0,-50 L 0,50" stroke="#a3a3a3" stroke-width="1" stroke-dasharray="4 4"/>`;
-                        }
-                        
-                        questionSvg = `<svg viewBox="-55 -55 110 110" class="mx-auto">${reflectionLine}${toPath(offsetBaseShape, '#a3a3a3')}</svg>`;
-                        answerSvg = `<svg viewBox="-55 -55 110 110" class="mx-auto">${reflectionLine}${toPath(offsetBaseShape, '#d4d4d4', 0.7)}${toPath(finalShape, '#60a5fa')}</svg>`;
+                        return {
+                            question: `Rotate the shape <strong>${angle}° ${direction}</strong> around the red dot.`,
+                            svg: qSvg,
+                            answerSvg: aSvg
+                        };
                     }
-
-                    return {
-                        question: questionText,
-                        svg: questionSvg,
-                        answer: answerSvg 
-                    };
                 }
             ]
         };
 
         // --- Main App Logic ---
         function generateQuestions() {
-            // Clear previous questions and answers
             questionsGrid.innerHTML = '';
             answersList.innerHTML = '';
             answersContainer.classList.add('hidden');
             answersBtn.textContent = 'Show Answers';
             currentAnswers = [];
             
-            // Get one question from each category
             let questions = [];
             for (const category in questionGenerators) {
                 const categoryGenerators = questionGenerators[category];
@@ -667,10 +684,8 @@
                 questions.push(generator());
             }
 
-            // Shuffle the order of questions
             questions = shuffleArray(questions);
             
-            // Display questions and store answers
             questions.forEach((q, index) => {
                 const questionBox = document.createElement('div');
                 questionBox.className = 'question-box bg-white p-5 rounded-xl shadow-sm border border-gray-200 flex flex-col justify-between';
@@ -687,7 +702,8 @@
                     </div>
                 `;
                 questionsGrid.appendChild(questionBox);
-                currentAnswers.push(q.answer);
+                // Store answer, prioritizing answerSvg if it exists
+                currentAnswers.push({ text: q.answer, svg: q.answerSvg });
             });
         }
 
@@ -700,7 +716,11 @@
                 answersList.innerHTML = ''; // Clear old answers
                 currentAnswers.forEach(answer => {
                     const li = document.createElement('li');
-                    li.innerHTML = answer;
+                    if (answer.svg) {
+                        li.innerHTML = `<div class="w-full max-w-xs mx-auto">${answer.svg}</div>`;
+                    } else {
+                        li.innerHTML = answer.text;
+                    }
                     answersList.appendChild(li);
                 });
             }
@@ -717,8 +737,4 @@
 
 </body>
 </html>
-
-
-
-
 
